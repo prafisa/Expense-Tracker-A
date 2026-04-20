@@ -1,8 +1,8 @@
 {
   "summary": [
     { "label": "Total balance", "value": "Rs.12,340", "change": "+2.4% this month", "positive": true },
-    { "label": "Total income", "value": "Rs.5,200", "change": "+$300 vs last month", "positive": true },
-    { "label": "Total expenses", "value": "Rs.3,460", "change": "+$120 vs last month", "positive": false },
+    { "label": "Total income", "value": "Rs.5,200", "change": "Rs.300 vs last month", "positive": true },
+    { "label": "Total expenses", "value": "Rs.3,460", "change": "+Rs.120 vs last month", "positive": false },
     { "label": "Net savings", "value": "Rs.1,740", "change": "33% savings rate", "positive": true }
   ],
 

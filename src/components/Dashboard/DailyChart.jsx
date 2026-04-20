@@ -25,7 +25,7 @@ const DailyChart = ({ data }) => {
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
           <XAxis dataKey="day" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
           <YAxis
-            tickFormatter={(v) => `$${v}`}
+            tickFormatter={(v) => `Rs.${v}`}
             tick={{ fontSize: 11 }}
             axisLine={false}
             tickLine={false}
