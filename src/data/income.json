@@ -1,0 +1,92 @@
+{
+  "transactions": [
+    {
+      "id": 1,
+      "name": "Monthly salary",
+      "type": "INCOME",
+      "categoryId": 1,
+      "category": { "id": 1, "name": "Salary", "type": "INCOME" },
+      "reason": "April salary payment",
+      "source": "MOBILE_BANKING",
+      "date": "2026-04-15",
+      "amount": 3200
+    },
+    {
+      "id": 2,
+      "name": "Freelance project",
+      "type": "INCOME",
+      "categoryId": 2,
+      "category": { "id": 2, "name": "Freelance", "type": "INCOME" },
+      "reason": "Website design project",
+      "source": "MOBILE_BANKING",
+      "date": "2026-04-09",
+      "amount": 2000
+    },
+    {
+      "id": 3,
+      "name": "Bonus",
+      "type": "INCOME",
+      "categoryId": 1,
+      "category": { "id": 1, "name": "Salary", "type": "INCOME" },
+      "reason": "Performance bonus",
+      "source": "MOBILE_BANKING",
+      "date": "2026-04-05",
+      "amount": 500
+    },
+    {
+      "id": 4,
+      "name": "Logo design",
+      "type": "INCOME",
+      "categoryId": 2,
+      "category": { "id": 2, "name": "Freelance", "type": "INCOME" },
+      "reason": "Client logo project",
+      "source": "ESEWA",
+      "date": "2026-03-28",
+      "amount": 150
+    },
+    {
+      "id": 5,
+      "name": "March salary",
+      "type": "INCOME",
+      "categoryId": 1,
+      "category": { "id": 1, "name": "Salary", "type": "INCOME" },
+      "reason": "March salary payment",
+      "source": "MOBILE_BANKING",
+      "date": "2026-03-15",
+      "amount": 3200
+    },
+    {
+      "id": 6,
+      "name": "App development",
+      "type": "INCOME",
+      "categoryId": 2,
+      "category": { "id": 2, "name": "Freelance", "type": "INCOME" },
+      "reason": "Mobile app project",
+      "source": "KHALTI",
+      "date": "2026-03-10",
+      "amount": 800
+    },
+    {
+      "id": 7,
+      "name": "February salary",
+      "type": "INCOME",
+      "categoryId": 1,
+      "category": { "id": 1, "name": "Salary", "type": "INCOME" },
+      "reason": "February salary payment",
+      "source": "MOBILE_BANKING",
+      "date": "2026-02-15",
+      "amount": 3200
+    },
+    {
+      "id": 8,
+      "name": "Tutoring",
+      "type": "INCOME",
+      "categoryId": 2,
+      "category": { "id": 2, "name": "Freelance", "type": "INCOME" },
+      "reason": "Online tutoring session",
+      "source": "ESEWA",
+      "date": "2026-02-10",
+      "amount": 120
+    }
+  ]
+}

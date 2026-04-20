@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-rou
 import AppLayout from './layouts/AppLayout'
 import ExpensePage from "./pages/ExpensePage"
 import Dashboard from './pages/Dashboard'
-import IncomePage from "./pages/Incomepage"
+import IncomePage from "./pages/Income"
 
 import React from 'react'
 

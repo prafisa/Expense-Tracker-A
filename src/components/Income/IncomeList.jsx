@@ -3,7 +3,7 @@ const CAT_BG   = { Salary: "bg-green-100", Freelance: "bg-blue-100", Investment:
 
 export default function IncomeList({ incomes, onDelete }) {
   const fmt = (n) =>
-    "$" + Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    "Rs. " + Number(n).toLocaleString("ne-NP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   const sorted = [...incomes].sort((a, b) => new Date(b.date) - new Date(a.date));
 
@@ -16,7 +16,7 @@ export default function IncomeList({ incomes, onDelete }) {
       <p className="text-xs font-medium text-slate-500 mb-2">Recent income</p>
       <div className="flex flex-col gap-2">
         {sorted.map((item) => {
-          const dateStr = new Date(item.date).toLocaleDateString("en-US", {
+          const dateStr = new Date(item.date).toLocaleDateString("ne-NP", {
             month: "short", day: "numeric", year: "numeric",
           });
           return (
