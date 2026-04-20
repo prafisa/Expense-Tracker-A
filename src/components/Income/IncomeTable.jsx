@@ -13,12 +13,18 @@ const sourceColors = {
 };
 
 const categoryColors = {
-  Salary: "bg-blue-100 text-blue-800",
-  Freelance: "bg-indigo-100 text-indigo-800",
+  "Salary":        "bg-blue-100 text-blue-800",
+  "Freelance":     "bg-indigo-100 text-indigo-800",
+  "Food & Dining": "bg-orange-100 text-orange-800",
+  "Transport":     "bg-yellow-100 text-yellow-800",
+  "Health":        "bg-red-100 text-red-800",
+  "Utilities":     "bg-purple-100 text-purple-800",
+  "Shopping":      "bg-pink-100 text-pink-800",
+  "Entertainment": "bg-green-100 text-green-800",
 };
 
-const IncomeTable = ({ transactions, onDelete }) => {
-  if (transactions.length === 0) {
+const IncomeTable = ({ transactions }) => {
+  if (!transactions ||transactions.length === 0) {
     return (
       <div className="bg-white border border-gray-200 rounded-xl p-12 text-center mb-6">
         <p className="text-gray-400 text-sm">No income records found.</p>
@@ -34,7 +40,6 @@ const IncomeTable = ({ transactions, onDelete }) => {
           <tr className="bg-gray-50 border-b border-gray-100">
             <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Category</th>
             <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Name</th>
-            <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Reason</th>
             <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Date</th>
             <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Source</th>
             <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Amount</th>
@@ -42,7 +47,7 @@ const IncomeTable = ({ transactions, onDelete }) => {
           </tr>
         </thead>
         <tbody>
-          {transactions.map(txn => (
+          {transactions.slice(0, 5).map(txn => (
             <tr
               key={txn.id}
               className="border-b border-gray-50 hover:bg-gray-50 transition-colors last:border-none"
@@ -56,35 +61,32 @@ const IncomeTable = ({ transactions, onDelete }) => {
                 </span>
               </td>
 
-              {/* Name */}
-              <td className="px-4 py-3">
+               {/* Name + reason */}
+              <td className="px-4 py-4">
                 <p className="text-sm font-medium text-gray-800">{txn.name}</p>
-              </td>
-
-              {/* Reason */}
-              <td className="px-4 py-3">
-                <p className="text-xs text-gray-400">{txn.reason || "—"}</p>
+                {txn.reason && (
+                  <p className="text-xs text-gray-400">{txn.reason}</p>
+                )}
               </td>
 
               {/* Date */}
-              <td className="px-4 py-3 text-sm text-gray-500">{txn.date}</td>
+              <td className="px-4 py-4 text-sm text-gray-500">{txn.date}</td>
 
               {/* Source */}
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <span className={`text-xs px-2 py-1 rounded-md ${sourceColors[txn.source]}`}>
                   {sourceLabels[txn.source]}
                 </span>
               </td>
 
               {/* Amount */}
-              <td className="px-4 py-3 text-sm font-medium text-green-600">
+              <td className="px-4 py-4 text-sm font-medium text-green-600">
                 +Rs. {txn.amount.toLocaleString()}
               </td>
 
               {/* Delete */}
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <button
-                  onClick={() => onDelete(txn.id)}
                   className="text-xs px-3 py-1 border border-red-200 rounded-lg text-red-500 hover:bg-red-50"
                 >
                   Delete

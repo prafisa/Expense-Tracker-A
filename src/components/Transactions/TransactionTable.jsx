@@ -23,7 +23,7 @@ const categoryColors = {
   "Entertainment": "bg-green-100 text-green-800",
 };
 
-const TransactionTable = ({ transactions, onDelete }) => {
+const TransactionTable = ({ transactions }) => {
  if (!transactions || transactions.length === 0) {
     return (
       <div className="bg-white border border-gray-200 rounded-xl p-12 text-center mb-6">
@@ -99,7 +99,7 @@ const TransactionTable = ({ transactions, onDelete }) => {
               {/* Actions — only Delete */}
               <td className="px-4 py-4">
                 <button
-                  onClick={() => onDelete(txn.id)}
+                  
                   className="text-xs px-3 py-1 border border-red-200 rounded-lg text-red-500 hover:bg-red-50"
                 >
                   Delete

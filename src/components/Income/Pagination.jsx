@@ -1,40 +1,43 @@
-const Pagination = ({ currentPage, totalPages, totalItems, itemsPerPage, onPageChange }) => {
-  const start = (currentPage - 1) * itemsPerPage + 1;
-  const end = Math.min(currentPage * itemsPerPage, totalItems);
+const Pagination = () => {
+  const totalItems = 12;
+  const itemsPerPage = 5;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
 
   return (
-    <div className="flex justify-between items-center">
-      <p className="text-xs text-gray-400">
-        Showing {start}–{end} of {totalItems} transactions
-      </p>
-      <div className="flex gap-1">
+    <div className="flex justify-between items-center py-3 flex-wrap gap-3">
+      <span className="text-sm text-gray-400">
+        Showing 1 – 5 of {totalItems} transactions
+      </span>
+      <div className="flex items-center gap-1">
+
+        {/* Prev — disabled on page 1 */}
         <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="text-xs px-3 py-2 border border-gray-200 rounded-lg text-gray-500 disabled:opacity-40 hover:bg-gray-50"
+          className="px-3 py-1.5 text-sm border border-gray-200 rounded-md bg-white text-gray-300 cursor-not-allowed"
+          disabled
         >
-          Prev
+          &#8592; Prev
         </button>
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-          <button
-            key={page}
-            onClick={() => onPageChange(page)}
-            className={`text-xs px-3 py-2 border rounded-lg ${
-              page === currentPage
-                ? "bg-blue-500 text-white border-blue-500"
-                : "border-gray-200 text-gray-500 hover:bg-gray-50"
-            }`}
-          >
-            {page}
-          </button>
-        ))}
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="text-xs px-3 py-2 border border-gray-200 rounded-lg text-gray-500 disabled:opacity-40 hover:bg-gray-50"
-        >
-          Next
+
+        {/* Page 1 — active */}
+        <button className="px-3 py-1.5 text-sm border border-blue-500 rounded-md bg-blue-500 text-white">
+          1
         </button>
+
+        {/* Page 2 */}
+        <button className="px-3 py-1.5 text-sm border border-gray-200 rounded-md bg-white text-gray-500 hover:bg-gray-50">
+          2
+        </button>
+
+        {/* Page 3 */}
+        <button className="px-3 py-1.5 text-sm border border-gray-200 rounded-md bg-white text-gray-500 hover:bg-gray-50">
+          {totalPages}
+        </button>
+
+        {/* Next */}
+        <button className="px-3 py-1.5 text-sm border border-gray-200 rounded-md bg-white text-gray-500 hover:bg-gray-50">
+          Next &#8594;
+        </button>
+
       </div>
     </div>
   );
