@@ -1,5 +1,5 @@
- import ExpenseCard from "./ExpenseCard";
-
+//  import ExpenseCard from "./components/Expense/ExpenseCard";
+import ExpenseCard from "./ExpenseCard";
  function ExpenseList({expenses}){
     return(
         <div>

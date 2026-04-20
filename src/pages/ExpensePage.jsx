@@ -1,6 +1,6 @@
-import ExpenseForm from "../components/ExpenseForm";
-import ExpenseList from "../components/ExpenseList";
-import ExpenseSummery from "../components/ExpenseSummery";
+import ExpenseForm from "../components/Expense/ExpenseForm";
+import ExpenseList from "../components/Expense/ExpenseList";
+import ExpenseSummery from "../components/Expense/ExpenseSummery";
 import expenses from "../data/expenses";
 
 function ExpensePage(){
