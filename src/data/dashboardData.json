@@ -1,0 +1,145 @@
+{
+  "summary": [
+    { "label": "Total balance", "value": "Rs.12,340", "change": "+2.4% this month", "positive": true },
+    { "label": "Total income", "value": "Rs.5,200", "change": "+$300 vs last month", "positive": true },
+    { "label": "Total expenses", "value": "Rs.3,460", "change": "+$120 vs last month", "positive": false },
+    { "label": "Net savings", "value": "Rs.1,740", "change": "33% savings rate", "positive": true }
+  ],
+
+   "categories": 
+  [
+  {  "id": 1, "name": "Food & Dining", "type": "EXPENSE", "value": 40, "color": "#FF8042" },
+  {  "id": 2, "name": "Transport", "type": "EXPENSE", "value": 10, "color": "#0088FE" },
+  {  "id": 3, "name": "Health", "type": "EXPENSE", "value": 8, "color": "#00C49F" },
+  {  "id": 4, "name": "Utilities", "type": "EXPENSE", "value": 12, "color": "#FFBB28" },
+  {  "id": 5, "name": "Shopping", "type": "EXPENSE", "value": 20, "color": "#FF6B6B" },
+  {  "id": 6, "name": "Entertainment", "type": "EXPENSE", "value": 10, "color": "#845EC2" }
+],
+
+  "transactions": [
+    {
+      "id": 1,
+      "name": "Monthly salary",
+      "type": "INCOME",
+      "categoryId": 1,
+      "category": { "id": 1, "name": "Salary", "type": "INCOME" },
+      "reason": "April salary payment",
+      "source": "MOBILE_BANKING",
+      "date": "2026-04-15",
+      "amount": 3200,
+      "icon": "💼",
+      "bg": "#EAF3DE"
+    },
+    {
+      "id": 2,
+      "name": "Groceries",
+      "type": "EXPENSE",
+      "categoryId": 3,
+      "category": { "id": 3, "name": "Food & Dining", "type": "EXPENSE" },
+      "reason": "Weekly grocery shopping",
+      "source": "ESEWA",
+      "date": "2026-04-18",
+      "amount": 64,
+      "icon": "🛒",
+      "bg": "#E6F1FB"
+    },
+    {
+      "id": 3,
+      "name": "Fuel",
+      "type": "EXPENSE",
+      "categoryId": 4,
+      "category": { "id": 4, "name": "Transport", "type": "EXPENSE" },
+      "reason": "Bike refuel",
+      "source": "CASH",
+      "date": "2026-04-14",
+      "amount": 48,
+      "icon": "🚗",
+      "bg": "#FAEEDA"
+    },
+    {
+      "id": 4,
+      "name": "Doctor visit",
+      "type": "EXPENSE",
+      "categoryId": 5,
+      "category": { "id": 5, "name": "Health", "type": "EXPENSE" },
+      "reason": "General checkup",
+      "source": "KHALTI",
+      "date": "2026-04-12",
+      "amount": 120,
+      "icon": "🏥",
+      "bg": "#FBEAF0"
+    },
+    {
+      "id": 5,
+      "name": "Electricity bill",
+      "type": "EXPENSE",
+      "categoryId": 6,
+      "category": { "id": 6, "name": "Utilities", "type": "EXPENSE" },
+      "reason": "NEA monthly bill",
+      "source": "ESEWA",
+      "date": "2026-04-10",
+      "amount": 85,
+      "icon": "💡",
+      "bg": "#EEEDFE"
+    },
+    {
+      "id": 6,
+      "name": "Freelance project",
+      "type": "INCOME",
+      "categoryId": 2,
+      "category": { "id": 2, "name": "Freelance", "type": "INCOME" },
+      "reason": "Website design project",
+      "source": "MOBILE_BANKING",
+      "date": "2026-04-09",
+      "amount": 2000,
+      "icon": "💻",
+      "bg": "#EAF3DE"
+    },
+    {
+      "id": 7,
+      "name": "Daraz shopping",
+      "type": "EXPENSE",
+      "categoryId": 7,
+      "category": { "id": 7, "name": "Shopping", "type": "EXPENSE" },
+      "reason": "Bought headphones",
+      "source": "KHALTI",
+      "date": "2026-04-08",
+      "amount": 150,
+      "icon": "🛍️",
+      "bg": "#F1EFE8"
+    },
+    {
+      "id": 8,
+      "name": "Cinema ticket",
+      "type": "EXPENSE",
+      "categoryId": 8,
+      "category": { "id": 8, "name": "Entertainment", "type": "EXPENSE" },
+      "reason": "Movie with friends",
+      "source": "CASH",
+      "date": "2026-04-06",
+      "amount": 35,
+      "icon": "🎬",
+      "bg": "#FAECE7"
+    }
+  ],
+
+  "monthlyData": [
+    { "month": "Nov", "income": 4800, "expense": 3100 },
+    { "month": "Dec", "income": 5100, "expense": 3800 },
+    { "month": "Jan", "income": 4600, "expense": 2900 },
+    { "month": "Feb", "income": 5300, "expense": 3200 },
+    { "month": "Mar", "income": 4900, "expense": 3340 },
+    { "month": "Apr", "income": 5200, "expense": 3460 }
+  ],
+
+  "dailyData": [
+     { "day": "Sun", "amount": 64 },
+    { "day": "Mon", "amount": 45 },
+    { "day": "Tue", "amount": 120 },
+    { "day": "Wed", "amount": 30 },
+    { "day": "Thu", "amount": 210 },
+    { "day": "Fri", "amount": 95 },
+    { "day": "Sat", "amount": 180 }
+   
+  ]
+}
