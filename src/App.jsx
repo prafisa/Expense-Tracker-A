@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
 import AppLayout from './layouts/AppLayout'
 import ExpensePage from "./pages/ExpensePage"
+import Dashboard from './pages/Dashboard'
 
 import React from 'react'
 
@@ -16,7 +17,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'dashboard',
-        element: <div>Dashboard</div>
+        element: <Dashboard/>
       },
       {
         path: 'transactions',
