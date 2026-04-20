@@ -1,5 +1,3 @@
-// import CategoryIcon from "../CategoryIcon";
-
 const sourceLabels = {
   CASH: "Cash",
   ESEWA: "eSewa",
@@ -14,8 +12,19 @@ const sourceColors = {
   MOBILE_BANKING: "bg-blue-100 text-blue-700",
 };
 
-const TransactionTable = ({ transactions, onEdit, onDelete }) => {
-  if (transactions.length === 0) {
+const categoryColors = {
+  "Salary":        "bg-blue-100 text-blue-800",
+  "Freelance":     "bg-indigo-100 text-indigo-800",
+  "Food & Dining": "bg-orange-100 text-orange-800",
+  "Transport":     "bg-yellow-100 text-yellow-800",
+  "Health":        "bg-red-100 text-red-800",
+  "Utilities":     "bg-purple-100 text-purple-800",
+  "Shopping":      "bg-pink-100 text-pink-800",
+  "Entertainment": "bg-green-100 text-green-800",
+};
+
+const TransactionTable = ({ transactions }) => {
+ if (!transactions || transactions.length === 0) {
     return (
       <div className="bg-white border border-gray-200 rounded-xl p-12 text-center mb-6">
         <p className="text-gray-400 text-sm">No transactions found.</p>
@@ -39,21 +48,20 @@ const TransactionTable = ({ transactions, onEdit, onDelete }) => {
           </tr>
         </thead>
         <tbody>
-          {transactions.map(txn => (
+          {transactions.slice(0, 5).map(txn => (
             <tr key={txn.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
 
-              {/* Category */}
-              <td className="px-4 py-3">
-                <div className="flex items-center gap-2">
-                  {/* <CategoryIcon categoryName={txn.category.name} size="sm" /> */}
-                  <div>
-                    <p className="text-sm text-gray-700">{txn.category.name}</p>
-                  </div>
-                </div>
+              {/* Category — pill badge instead of icon */}
+              <td className="px-4 py-4">
+                <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                  categoryColors[txn.category.name] || "bg-gray-100 text-gray-600"
+                }`}>
+                  {txn.category.name}
+                </span>
               </td>
 
               {/* Name + reason */}
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <p className="text-sm font-medium text-gray-800">{txn.name}</p>
                 {txn.reason && (
                   <p className="text-xs text-gray-400">{txn.reason}</p>
@@ -61,7 +69,7 @@ const TransactionTable = ({ transactions, onEdit, onDelete }) => {
               </td>
 
               {/* Date */}
-              <td className="px-4 py-3 text-sm text-gray-500">{txn.date}</td>
+              <td className="px-4 py-4 text-sm text-gray-500">{txn.date}</td>
 
               {/* Source */}
               <td className="px-4 py-3">
@@ -71,7 +79,7 @@ const TransactionTable = ({ transactions, onEdit, onDelete }) => {
               </td>
 
               {/* Type */}
-              <td className="px-4 py-3">
+              <td className="px-4 py-4">
                 <span className={`text-xs px-2 py-1 rounded-full font-medium ${
                   txn.type === "INCOME"
                     ? "bg-green-100 text-green-700"
@@ -82,29 +90,22 @@ const TransactionTable = ({ transactions, onEdit, onDelete }) => {
               </td>
 
               {/* Amount */}
-              <td className={`px-4 py-3 text-sm font-medium ${
+              <td className={`px-4 py-4 text-sm font-medium ${
                 txn.type === "INCOME" ? "text-green-600" : "text-red-500"
               }`}>
-                {txn.type === "INCOME" ? `+Rs.${txn.amount}` : `-Rs.${txn.amount}`}
+                {txn.type === "INCOME" ? `+$${txn.amount}` : `-$${txn.amount}`}
               </td>
 
-              {/* Actions */}
-              <td className="px-4 py-3">
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => onEdit(txn)}
-                    className="text-xs px-3 py-1 border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => onDelete(txn.id)}
-                    className="text-xs px-3 py-1 border border-red-200 rounded-lg text-red-500 hover:bg-red-50"
-                  >
-                    Delete
-                  </button>
-                </div>
+              {/* Actions — only Delete */}
+              <td className="px-4 py-4">
+                <button
+                  
+                  className="text-xs px-3 py-1 border border-red-200 rounded-lg text-red-500 hover:bg-red-50"
+                >
+                  Delete
+                </button>
               </td>
+
             </tr>
           ))}
         </tbody>
