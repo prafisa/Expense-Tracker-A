@@ -6,6 +6,7 @@ import IncomePage from "./pages/Income"
 import Transaction from './pages/Transaction'
 
 import React from 'react'
+import CategoryPage from './pages/CategoryPage'
 
 
 const router = createBrowserRouter([
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'categories',
-        element: <div>Categories</div>
+        element: <CategoryPage/>
       }
     ]
   },
