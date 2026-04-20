@@ -85,7 +85,7 @@ const TransactionTable = ({ transactions, onEdit, onDelete }) => {
               <td className={`px-4 py-3 text-sm font-medium ${
                 txn.type === "INCOME" ? "text-green-600" : "text-red-500"
               }`}>
-                {txn.type === "INCOME" ? `+$${txn.amount}` : `-$${txn.amount}`}
+                {txn.type === "INCOME" ? `+Rs.${txn.amount}` : `-Rs.${txn.amount}`}
               </td>
 
               {/* Actions */}
