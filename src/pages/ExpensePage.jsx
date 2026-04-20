@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import ExpenseList from '../components/Expense/ExpenseList'
 import ExpenseSummary from '../components/Expense/ExpenseSummary'
-import ExpenseModal from '../components/Expense/ExpenseModal'
+import ExpenseList from '../components/Expense/ExpenseList'
+import ExpenseForm from '../components/Expense/ExpenseForm'
 import expenses from '../data/expenses'
 
 function ExpensePage() {
@@ -19,15 +19,13 @@ function ExpensePage() {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <ExpenseSummary expenses={expenses} />
-        <div className="md:col-span-2">
-          <ExpenseList expenses={expenses} />
-        </div>
-      </div>
+      <ExpenseSummary expenses={expenses} />
+      <ExpenseList expenses={expenses} />
 
       {showModal && (
-        <ExpenseModal onClose={() => setShowModal(false)} />
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4">
+          <ExpenseForm onClose={() => setShowModal(false)} />
+        </div>
       )}
     </div>
   )

@@ -3,46 +3,22 @@ function ExpenseSummary({ expenses }) {
   const count = expenses.length
   const avg = count > 0 ? Math.round(total / count) : 0
 
-  const topCategory = expenses.length > 0
-    ? Object.entries(
-        expenses.reduce((acc, e) => {
-          acc[e.category] = (acc[e.category] || 0) + e.amount
-          return acc
-        }, {})
-      ).sort((a, b) => b[1] - a[1])[0][0]
-    : 'None'
-
   return (
-    <div className="col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+    <div className="grid grid-cols-3 gap-4 mb-6">
 
-      <div className="rounded-xl overflow-hidden border border-zinc-200">
-        <div className="bg-violet-700 px-5 py-6">
-          <p className="text-xs font-medium text-violet-300 uppercase tracking-wide mb-2">This Month</p>
-          <p className="text-3xl font-semibold text-white">Rs. {total}</p>
-        </div>
-        <div className="bg-white px-5 py-4">
-          <span className="text-xs bg-slate-50 text-slate-400 px-2 py-0.5 rounded-full">{count} entries</span>
-        </div>
+      <div className="bg-white border border-gray-200 rounded-xl p-4">
+        <p className="text-xs text-gray-500 mb-1">Total spent</p>
+        <p className="text-xl font-medium text-red-600">-Rs.{total}</p>
       </div>
 
-      <div className="rounded-xl overflow-hidden border border-zinc-200">
-        <div className="bg-violet-700 px-5 py-6">
-          <p className="text-xs font-medium text-violet-300 uppercase tracking-wide mb-2">Top Category</p>
-          <p className="text-3xl font-semibold text-white">{topCategory}</p>
-        </div>
-        <div className="bg-white px-5 py-4">
-          <span className="text-xs text-slate-400">Highest spending</span>
-        </div>
+      <div className="bg-white border border-gray-200 rounded-xl p-4">
+        <p className="text-xs text-gray-500 mb-1">This month</p>
+        <p className="text-xl font-medium text-red-600">-Rs. {total}</p>
       </div>
 
-      <div className="rounded-xl overflow-hidden border border-zinc-200">
-        <div className="bg-violet-700 px-5 py-6">
-          <p className="text-xs font-medium text-violet-300 uppercase tracking-wide mb-2">Avg per Expense</p>
-          <p className="text-3xl font-semibold text-white">Rs. {avg}</p>
-        </div>
-        <div className="bg-white px-5 py-4">
-          <span className="text-xs text-slate-400">{count} transactions</span>
-        </div>
+      <div className="bg-white border border-gray-200 rounded-xl p-4">
+        <p className="text-xs text-gray-500 mb-1">Avg per transaction</p>
+        <p className="text-xl font-medium text-gray-700">Rs. {avg}</p>
       </div>
 
     </div>
