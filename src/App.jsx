@@ -3,6 +3,7 @@ import AppLayout from './layouts/AppLayout'
 import ExpensePage from "./pages/ExpensePage"
 import Dashboard from './pages/Dashboard'
 import IncomePage from "./pages/Income"
+import Transaction from './pages/Transaction'
 
 import React from 'react'
 
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'transactions',
-        element: <div>Transactions</div>
+        element: <Transaction/>
       },
       {
         path: 'income',
