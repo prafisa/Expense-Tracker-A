@@ -1,8 +1,8 @@
+import ExpensePage from "./pages/ExpensePage";
+
 function App() {
   return (
-    <>
-      <p className='text-red-500'>Expense tracker</p>
-    </>
+        <ExpensePage/>
   );
 }
 
