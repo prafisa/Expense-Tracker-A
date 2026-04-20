@@ -1,7 +1,6 @@
 export default function CategoryTable({ categories, onDelete }) {
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm mt-6 overflow-hidden">
-
       {/* Table Header */}
       <div className="grid grid-cols-4 bg-gray-50 text-gray-500 text-sm font-medium px-6 py-3">
         <div>Category Name</div>
@@ -17,9 +16,7 @@ export default function CategoryTable({ categories, onDelete }) {
           className="grid grid-cols-4 px-6 py-3 border-t border-gray-100 items-center text-sm hover:bg-gray-50"
         >
           {/* Category Name */}
-          <div className="font-medium text-gray-800">
-            {category.name}
-          </div>
+          <div className="font-medium text-gray-800">{category.name}</div>
 
           {/* Type */}
           <div>
@@ -35,12 +32,16 @@ export default function CategoryTable({ categories, onDelete }) {
           </div>
 
           {/* Description */}
-          <div className="text-gray-500 truncate">
-            {category.description}
-          </div>
+          <div className="text-gray-500 truncate">{category.description}</div>
 
           {/* Actions */}
-          <div className="text-center">
+          <div className="text-center flex items-center justify-center gap-3">
+            <button
+              onClick={() => onEdit(category)}
+              className="text-blue-500 hover:text-blue-600 text-sm font-medium"
+            >
+              Edit
+            </button>
             <button
               onClick={() => onDelete(category.id)}
               className="text-red-500 hover:text-red-600 text-sm font-medium"
