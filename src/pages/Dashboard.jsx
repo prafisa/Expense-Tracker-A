@@ -1,10 +1,10 @@
 import data from "../data/dashboardData.json";
-import SummaryCard from "../components/\/SummaryCard";
-import MonthlyChart from "../components/MonthlyChart";
-import DonutChart from "../components/DonutChart";
+import SummaryCard from "../components/Dashboard/SummaryCard";
+import MonthlyChart from "../components/Dashboard/MonthlyChart";
+import DonutChart from "../components/Dashboard/DonutChart";
 
-import DailyChart from "../components/DailyChart";
-import RecentTransactions from "../components/RecentTransactions";
+import DailyChart from "../components/Dashboard/DailyChart";
+import RecentTransactions from "../components/Dashboard/RecentTransactions";
 
 export default function Dashboard() {
     console.log("categoryData:", data.categoryData)
