@@ -5,9 +5,9 @@ import expenses from "../data/expenses";
 
 function ExpensePage(){
     return(
-        <div className="min-h-screen bg-gray-100 py-8">
+        <div className="min-h-screen bg-slate-100 py-8">
             <div className="max-w-xl mx-auto px-4">
-                <h1 className="text-3xl font-bold text-gray-800 mb-6">
+                <h1 className="text-3xl font-bold text-slate-800 mb-6">
                     Expense Tracker
                 </h1>
                 <ExpenseSummery expenses={expenses}/>
