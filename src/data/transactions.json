@@ -1,0 +1,136 @@
+{
+  "transactions": [
+    {
+      "id": 1,
+      "name": "Monthly salary",
+      "type": "INCOME",
+      "categoryId": 1,
+      "category": { "id": 1, "name": "Salary", "type": "INCOME" },
+      "reason": "April salary payment",
+      "source": "MOBILE_BANKING",
+      "date": "2026-04-15",
+      "amount": 3200
+    },
+    {
+      "id": 2,
+      "name": "Groceries",
+      "type": "EXPENSE",
+      "categoryId": 3,
+      "category": { "id": 3, "name": "Food & Dining", "type": "EXPENSE" },
+      "reason": "Weekly grocery shopping",
+      "source": "ESEWA",
+      "date": "2026-04-18",
+      "amount": 64
+    },
+    {
+      "id": 3,
+      "name": "Fuel",
+      "type": "EXPENSE",
+      "categoryId": 4,
+      "category": { "id": 4, "name": "Transport", "type": "EXPENSE" },
+      "reason": "Bike refuel",
+      "source": "CASH",
+      "date": "2026-04-14",
+      "amount": 48
+    },
+    {
+      "id": 4,
+      "name": "Doctor visit",
+      "type": "EXPENSE",
+      "categoryId": 5,
+      "category": { "id": 5, "name": "Health", "type": "EXPENSE" },
+      "reason": "General checkup",
+      "source": "KHALTI",
+      "date": "2026-04-12",
+      "amount": 120
+    },
+    {
+      "id": 5,
+      "name": "Electricity bill",
+      "type": "EXPENSE",
+      "categoryId": 6,
+      "category": { "id": 6, "name": "Utilities", "type": "EXPENSE" },
+      "reason": "NEA monthly bill",
+      "source": "ESEWA",
+      "date": "2026-04-10",
+      "amount": 85
+    },
+    {
+      "id": 6,
+      "name": "Freelance project",
+      "type": "INCOME",
+      "categoryId": 2,
+      "category": { "id": 2, "name": "Freelance", "type": "INCOME" },
+      "reason": "Website design project",
+      "source": "MOBILE_BANKING",
+      "date": "2026-04-09",
+      "amount": 2000
+    },
+    {
+      "id": 7,
+      "name": "Daraz shopping",
+      "type": "EXPENSE",
+      "categoryId": 7,
+      "category": { "id": 7, "name": "Shopping", "type": "EXPENSE" },
+      "reason": "Bought headphones",
+      "source": "KHALTI",
+      "date": "2026-04-08",
+      "amount": 150
+    },
+    {
+      "id": 8,
+      "name": "Cinema ticket",
+      "type": "EXPENSE",
+      "categoryId": 8,
+      "category": { "id": 8, "name": "Entertainment", "type": "EXPENSE" },
+      "reason": "Movie with friends",
+      "source": "CASH",
+      "date": "2026-04-06",
+      "amount": 35
+    },
+    {
+      "id": 9,
+      "name": "Bonus",
+      "type": "INCOME",
+      "categoryId": 1,
+      "category": { "id": 1, "name": "Salary", "type": "INCOME" },
+      "reason": "Performance bonus",
+      "source": "MOBILE_BANKING",
+      "date": "2026-04-05",
+      "amount": 500
+    },
+    {
+      "id": 10,
+      "name": "Lunch",
+      "type": "EXPENSE",
+      "categoryId": 3,
+      "category": { "id": 3, "name": "Food & Dining", "type": "EXPENSE" },
+      "reason": "Office lunch",
+      "source": "ESEWA",
+      "date": "2026-04-04",
+      "amount": 12
+    },
+    {
+      "id": 11,
+      "name": "Bus fare",
+      "type": "EXPENSE",
+      "categoryId": 4,
+      "category": { "id": 4, "name": "Transport", "type": "EXPENSE" },
+      "reason": "Daily commute",
+      "source": "CASH",
+      "date": "2026-04-03",
+      "amount": 5
+    },
+    {
+      "id": 12,
+      "name": "Gym membership",
+      "type": "EXPENSE",
+      "categoryId": 5,
+      "category": { "id": 5, "name": "Health", "type": "EXPENSE" },
+      "reason": "Monthly gym fee",
+      "source": "KHALTI",
+      "date": "2026-04-02",
+      "amount": 30
+    }
+  ]
+}
