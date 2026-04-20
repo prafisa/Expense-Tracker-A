@@ -1,24 +1,51 @@
-import { useState } from "react";
-import TransactionForm from "./components/TransactionForm";
-import TransactionList from "./components/TransactionList";
+import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom'
+import AppLayout from './layouts/AppLayout'
+import ExpensePage from "./pages/ExpensePage"
+import Dashboard from './pages/Dashboard'
+import IncomePage from "./pages/Income"
 
-export default function App() {
-  const [transactions, setTransactions] = useState([]);
+import React from 'react'
 
-  const addTransaction = (tx) => {
-    setTransactions([...transactions, { ...tx, id: Date.now() }]);
-  };
 
-  return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-5">
-      <div className="bg-white shadow-xl rounded-2xl w-full max-w-md p-6">
-        <h1 className="text-2xl font-bold text-center mb-4">
-           Transaction Tracker
-        </h1>
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <AppLayout />,
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/dashboard" replace />
+      },
+      {
+        path: 'dashboard',
+        element: <Dashboard/>
+      },
+      {
+        path: 'transactions',
+        element: <div>Transactions</div>
+      },
+      {
+        path: 'income',
+        element: <IncomePage />
+      },
+      {
+        path: 'expenses',
+        element: <ExpensePage />
+      },
+      {
+        path: 'categories',
+        element: <div>Categories</div>
+      }
+    ]
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" replace />
+  }
+])
 
-        <TransactionForm addTransaction={addTransaction} />
-        <TransactionList transactions={transactions} />
-      </div>
-    </div>
-  );
+const App = () => {
+  return <RouterProvider router={router} />
 }
+
+export default App
