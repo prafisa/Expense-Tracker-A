@@ -7,7 +7,7 @@ function statusInfo(pct) {
   return { label: 'On track', color: 'emerald', Icon: CheckCircle2 }
 }
 
-const fmt = (n) => `Rs.${n.toLocaleString()}`
+const fmt = (n) => `Rs. ${n.toLocaleString()}`
 
 export default function BudgetRow({ budget, spent, onEdit, onDelete }) {
   const pct = budget.allocated > 0 ? Math.min((spent / budget.allocated) * 100, 100) : 0

@@ -1,4 +1,3 @@
-// pages/CategoriesPage.jsx
 import { useState } from "react";
 import { Search, Plus } from "lucide-react";
 
@@ -49,15 +48,15 @@ export default function CategoriesPage() {
 
           <div className="flex items-center gap-2">
             {/* Search */}
-            <div className="flex items-center gap-1.5 h-[32px] border border-gray-200 rounded-lg px-2.5 bg-gray-50 min-w-[150px]">
-              <Search size={14} className="text-gray-400 flex-shrink-0" />
+            <div className="flex items-center gap-1.5 h-8 border border-gray-200 rounded-lg px-2.5 bg-gray-50 min-w-37.5">
+              <Search size={14} className="text-gray-400 shrink-0" />
               <span className="text-[13px] text-gray-400">Search categories...</span>
             </div>
 
             {/* Add button */}
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 h-[32px] px-3 bg-gray-900 text-white text-[13px] font-medium rounded-lg hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-1.5 h-8 px-3 bg-gray-900 text-white text-[13px] font-medium rounded-lg hover:bg-gray-700 transition-colors"
             >
               <Plus size={13} />
               Add category
