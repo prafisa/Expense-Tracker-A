@@ -7,6 +7,14 @@ import incomeData from "../data/income.json"
 import ItemModal from "../components/shared/ItemModal"
 import categoriesData from "../data/dashboardData.json"
 
+const incomeCategories = [
+  { id: 1, name: 'Salary',     icon: '💼', type: 'INCOME' },
+  { id: 2, name: 'Freelance',  icon: '💻', type: 'INCOME' },
+  { id: 3, name: 'Investment', icon: '📈', type: 'INCOME' },
+  { id: 4, name: 'Business',   icon: '🏪', type: 'INCOME' },
+  { id: 5, name: 'Other',      icon: '💰', type: 'INCOME' },
+]
+
 const ITEMS_PER_PAGE = 5
 
 export default function Income() {
@@ -74,13 +82,13 @@ export default function Income() {
       />
 
       <ItemModal
-        open={isModalOpen}
-        onClose={handleClose}
-        onSave={handleSave}
-        editData={editData}
-        lockedType="income"
-        categories={categoriesData.categories}
-      />
+  open={isModalOpen}
+  onClose={handleClose}
+  onSave={handleSave}
+  editData={editData}
+  lockedType="income"
+  categories={incomeCategories}   
+/>
     </div>
   )
 }
