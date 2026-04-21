@@ -1,6 +1,6 @@
-import { Trash2 } from 'lucide-react'
+import { Trash2, Pencil } from 'lucide-react'
 
-function ExpenseCard({ expense }) {
+function ExpenseCard({ expense, onEdit, onDelete }) {   
   return (
     <tr className="border-b border-slate-100 last:border-b-0">
 
@@ -33,10 +33,22 @@ function ExpenseCard({ expense }) {
       </td>
 
       <td className="py-4">
-        <button className="flex items-center gap-1 text-rose-400 text-sm border border-rose-200 px-3 py-1 rounded-lg hover:bg-rose-50 transition-colors">
-          <Trash2 size={13} />
-          Delete
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => onEdit(expense)}
+            className="flex items-center gap-1 text-blue-400 text-sm border border-blue-200 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors"
+          >
+            <Pencil size={13} />
+            Edit
+          </button>
+          <button
+            onClick={() => onDelete(expense.id)}
+            className="flex items-center gap-1 text-rose-400 text-sm border border-rose-200 px-3 py-1 rounded-lg hover:bg-rose-50 transition-colors"
+          >
+            <Trash2 size={13} />
+            Delete
+          </button>
+        </div>
       </td>
 
     </tr>

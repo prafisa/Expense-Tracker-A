@@ -1,4 +1,4 @@
-export default function CategoryTable({ categories, onDelete }) {
+export default function CategoryTable({ categories, onDelete, onEdit }) {
   return (
     <div className="bg-white rounded-xl border border-gray-100 shadow-sm mt-6 overflow-hidden">
       {/* Table Header */}

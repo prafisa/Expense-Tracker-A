@@ -1,6 +1,6 @@
 import ExpenseCard from './ExpenseCard'
 
-function ExpenseList({ expenses }) {
+function ExpenseList({ expenses, onEdit, onDelete }) {   
   return (
     <div className="flex flex-col gap-4">
 
@@ -28,17 +28,9 @@ function ExpenseList({ expenses }) {
             <option value="Mobile Banking">Mobile Banking</option>
             <option value="Other">Other</option>
           </select>
-          <input
-            type="date"
-            className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500"
-          />
-          <input
-            type="date"
-            className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500"
-          />
-          <button className="text-sm text-slate-400 hover:text-slate-600">
-            Clear
-          </button>
+          <input type="date" className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500" />
+          <input type="date" className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500" />
+          <button className="text-sm text-slate-400 hover:text-slate-600">Clear</button>
         </div>
       </div>
 
@@ -52,12 +44,17 @@ function ExpenseList({ expenses }) {
               <th className="text-xs font-medium text-slate-400 text-left pb-3">DATE</th>
               <th className="text-xs font-medium text-slate-400 text-left pb-3">SOURCE</th>
               <th className="text-xs font-medium text-slate-400 text-left pb-3">AMOUNT</th>
-              <th className="text-xs font-medium text-slate-400 text-left pb-3">ACTION</th>
+              <th className="text-xs font-medium text-slate-400 text-left pb-3">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             {expenses.map((expense) => (
-              <ExpenseCard key={expense.id} expense={expense} />
+              <ExpenseCard
+                key={expense.id}
+                expense={expense}
+                onEdit={onEdit}           
+                onDelete={onDelete}       
+              />
             ))}
           </tbody>
         </table>
