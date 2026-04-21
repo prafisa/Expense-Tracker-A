@@ -47,7 +47,9 @@ export default function ItemModal({ open, onClose, onSave, editData, lockedType 
   }, [open, editData])
 
   // ── derived ─────────────────────────────────────────────────────────────────
-  const filteredCats = categories.filter(c => c.type === form.type)
+const filteredCats = categories.filter(c => 
+  c.type.toLowerCase() === form.type.toLowerCase()
+)
   const isEdit       = !!editData
   const isIncome     = form.type === 'income'
 

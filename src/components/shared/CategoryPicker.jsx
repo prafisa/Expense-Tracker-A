@@ -1,5 +1,3 @@
-
-
 export default function CategoryPicker({ categories, selected, onChange, error }) {
   return (
     <div className="space-y-1.5">
@@ -20,7 +18,7 @@ export default function CategoryPicker({ categories, selected, onChange, error }
                   : 'border-zinc-200 text-zinc-500 hover:border-zinc-300 hover:bg-zinc-50'
                 }`}
             >
-              <span className="text-lg">{cat.icon}</span>
+              <span className="text-lg">{cat.icon ?? '📦'}</span>  {/* ← fallback if no icon */}
               <span className="text-center leading-tight">{cat.name}</span>
             </button>
           )
