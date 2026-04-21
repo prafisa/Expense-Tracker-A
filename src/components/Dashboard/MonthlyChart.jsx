@@ -11,7 +11,7 @@ const MonthlyChart = ({ data }) => {
 
             <div className="flex gap-4 mb-3" >
                 <span className="flex items-center gap-1 text-xs text-gray-500">
-                    <span className="w-3 h-3 rounded-sm bg-blue-500 inline-block"></span>
+                    <span className="w-3 h-3 rounded-sm bg-green-500 inline-block"></span>
                     Income
                 </span>
 
@@ -33,7 +33,7 @@ const MonthlyChart = ({ data }) => {
                     {/* shows popup when hover over bars */}
                     <Tooltip formatter={(v) => `Rs. ${v.toLocaleString()}`} />
                     {/* draw income bars */}
-                    <Bar dataKey="income" fill="#378ADD" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="income" fill="#4fbd67" radius={[4, 4, 0, 0]} />
                     {/* draw expense bars */}
                     <Bar dataKey="expense" fill="#E24B4A" radius={[4, 4, 0, 0]} />
 
