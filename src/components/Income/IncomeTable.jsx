@@ -23,14 +23,14 @@ const categoryColors = {
   "Entertainment": "bg-green-100 text-green-800",
 };
 
-const IncomeTable = ({ transactions }) => {
-  if (!transactions ||transactions.length === 0) {
+const IncomeTable = ({ transactions, onEdit, onDelete }) => {  
+  if (!transactions || transactions.length === 0) {
     return (
       <div className="bg-white border border-gray-200 rounded-xl p-12 text-center mb-6">
         <p className="text-gray-400 text-sm">No income records found.</p>
         <p className="text-gray-300 text-xs mt-1">Try adjusting your filters.</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -43,16 +43,13 @@ const IncomeTable = ({ transactions }) => {
             <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Date</th>
             <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Source</th>
             <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Amount</th>
-            <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Action</th>
+            <th className="text-left text-xs font-medium text-gray-400 uppercase tracking-wide px-4 py-3">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {transactions.slice(0, 5).map(txn => (
-            <tr
-              key={txn.id}
-              className="border-b border-gray-50 hover:bg-gray-50 transition-colors last:border-none"
-            >
-              {/* Category pill */}
+          {transactions.map(txn => (   // ← removed slice(0,5), pagination handles this
+            <tr key={txn.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors last:border-none">
+
               <td className="px-4 py-3">
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${
                   categoryColors[txn.category.name] || "bg-gray-100 text-gray-600"
@@ -61,43 +58,47 @@ const IncomeTable = ({ transactions }) => {
                 </span>
               </td>
 
-               {/* Name + reason */}
               <td className="px-4 py-4">
                 <p className="text-sm font-medium text-gray-800">{txn.name}</p>
-                {txn.reason && (
-                  <p className="text-xs text-gray-400">{txn.reason}</p>
-                )}
+                {txn.reason && <p className="text-xs text-gray-400">{txn.reason}</p>}
               </td>
 
-              {/* Date */}
               <td className="px-4 py-4 text-sm text-gray-500">{txn.date}</td>
 
-              {/* Source */}
               <td className="px-4 py-4">
                 <span className={`text-xs px-2 py-1 rounded-md ${sourceColors[txn.source]}`}>
                   {sourceLabels[txn.source]}
                 </span>
               </td>
 
-              {/* Amount */}
               <td className="px-4 py-4 text-sm font-medium text-green-600">
                 +Rs. {txn.amount.toLocaleString()}
               </td>
 
-              {/* Delete */}
+              {/* Actions — edit + delete */}
               <td className="px-4 py-4">
-                <button
-                  className="text-xs px-3 py-1 border border-red-200 rounded-lg text-red-500 hover:bg-red-50"
-                >
-                  Delete
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => onEdit(txn)}
+                    className="text-xs px-3 py-1 border border-blue-200 rounded-lg text-blue-500 hover:bg-blue-50"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => onDelete(txn.id)}
+                    className="text-xs px-3 py-1 border border-red-200 rounded-lg text-red-500 hover:bg-red-50"
+                  >
+                    Delete
+                  </button>
+                </div>
               </td>
+
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 
 export default IncomeTable;

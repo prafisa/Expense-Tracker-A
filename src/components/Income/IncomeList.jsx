@@ -39,7 +39,7 @@ export default function IncomeList({ incomes }) {
             >
               {/* ICON */}
               <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0 ${
+                className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm shrink-0 ${
                   CAT_BG[item.category.name] || "bg-slate-100"
                 }`}
               />
