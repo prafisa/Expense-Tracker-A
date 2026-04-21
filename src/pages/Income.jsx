@@ -2,7 +2,7 @@ import { useState } from "react"
 import IncomeSummary from "../components/Income/IncomeSummary"
 import IncomeFilters from "../components/Income/IncomeFilters"
 import IncomeTable from "../components/Income/IncomeTable"
-import Pagination from "../components/Transactions/Pagination"   
+import Pagination from "../components/shared/Pagination"   
 import incomeData from "../data/income.json"
 import ItemModal from "../components/shared/ItemModal"
 import categoriesData from "../data/dashboardData.json"
@@ -52,7 +52,7 @@ export default function Income() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-1">
 
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-medium text-gray-800">Incomes</h1>

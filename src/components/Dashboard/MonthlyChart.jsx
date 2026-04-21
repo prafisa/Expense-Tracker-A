@@ -29,9 +29,9 @@ const MonthlyChart = ({ data }) => {
                     {/* strokeDasharray : dashed lines */}
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ceb9b9" />
                     <XAxis dataKey="month" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
-                    <YAxis tickFormatter={(v) => `Rs.${v / 1000}k`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
+                    <YAxis tickFormatter={(v) => `Rs. ${v / 1000}k`} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                     {/* shows popup when hover over bars */}
-                    <Tooltip formatter={(v) => `Rs.${v.toLocaleString()}`} />
+                    <Tooltip formatter={(v) => `Rs. ${v.toLocaleString()}`} />
                     {/* draw income bars */}
                     <Bar dataKey="income" fill="#378ADD" radius={[4, 4, 0, 0]} />
                     {/* draw expense bars */}

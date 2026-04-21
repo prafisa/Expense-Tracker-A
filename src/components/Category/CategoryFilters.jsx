@@ -1,70 +1,23 @@
-export default function CategoryFilters({ filters, setFilters }) {
+// components/categories/CategoryFilters.jsx
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
+const filters = ["All", "Expense", "Income", "Has budget"];
 
-    setFilters((prev) => ({
-      ...prev,
-      search: value,
-    }));
-  };
-
-  const handleTypeChange = (type) => {
-    setFilters((prev) => ({
-      ...prev,
-      type,
-    }));
-  };
-
+export default function CategoryFilters({ active = "All" }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mt-6">
-      <div className="flex flex-col md:flex-row md:items-center gap-4">
-        
-        {/* Search Input */}
-        <input
-          type="text"
-          placeholder="Search category..."
-          value={filters.search}
-          onChange={handleSearchChange}
-          className="flex-1 border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        />
-
-        {/* Filter Buttons */}
-        <div className="flex gap-2">
-          <button
-            onClick={() => handleTypeChange("All")}
-            className={`px-4 py-2 text-sm rounded-lg ${
-              filters.type === "All"
-                ? "bg-blue-500 text-white"
-                : "border border-gray-200 text-gray-600 hover:bg-gray-50"
+    <div className="flex gap-1.5 flex-wrap">
+      {filters.map((f) => (
+        <button
+          key={f}
+          className={`px-3 py-1 rounded-full text-[11px] border transition-colors cursor-default
+            ${
+              active === f
+                ? "bg-gray-900 text-white border-gray-900"
+                : "bg-transparent text-gray-500 border-gray-200 hover:border-gray-400"
             }`}
-          >
-            All
-          </button>
-
-          <button
-            onClick={() => handleTypeChange("Income")}
-            className={`px-4 py-2 text-sm rounded-lg ${
-              filters.type === "Income"
-                ? "bg-green-500 text-white"
-                : "border border-gray-200 text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            Income
-          </button>
-
-          <button
-            onClick={() => handleTypeChange("Expense")}
-            className={`px-4 py-2 text-sm rounded-lg ${
-              filters.type === "Expense"
-                ? "bg-red-500 text-white"
-                : "border border-gray-200 text-gray-600 hover:bg-gray-50"
-            }`}
-          >
-            Expense
-          </button>
-        </div>
-      </div>
+        >
+          {f}
+        </button>
+      ))}
     </div>
   );
 }

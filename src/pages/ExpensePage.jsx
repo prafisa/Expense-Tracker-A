@@ -4,6 +4,7 @@ import ExpenseList from "../components/Expense/ExpenseList";
 import initialExpenses from "../data/expenses";
 import ItemModal from "../components/shared/ItemModal";
 import categoriesData from "../data/dashboardData.json";
+import Pagination from "../components/shared/Pagination"   
 
 const expenseCategories = [
   { id: 1, name: "Food & Dining", icon: "🍜", type: "EXPENSE" },
@@ -12,13 +13,20 @@ const expenseCategories = [
   { id: 4, name: "Utilities", icon: "💡", type: "EXPENSE" },
   { id: 5, name: "Shopping", icon: "🛍️", type: "EXPENSE" },
   { id: 6, name: "Entertainment", icon: "🎮", type: "EXPENSE" },
-];
+];const ITEMS_PER_PAGE = 5
 
 function ExpensePage() {
   const [expenses, setExpenses] = useState(initialExpenses);
   const [isModalOpen, setModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const [currentPage, setCurrentPage]   = useState(1)
 
+
+  const totalPages = Math.max(1, Math.ceil(expenses.length / ITEMS_PER_PAGE))
+  const paginated  = expenses.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  )
   const handleSave = (formData) => {
     if (editData) {
       setExpenses((prev) =>
@@ -49,7 +57,7 @@ function ExpensePage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-slate-800">Expenses</h1>
+        <h1 className="text-xl font-medium text-gray-800">Expenses</h1>
         <button
           onClick={() => {
             setEditData(null);
@@ -67,7 +75,13 @@ function ExpensePage() {
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
-
+ <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={expenses.length}
+        itemsPerPage={ITEMS_PER_PAGE}
+        onPageChange={setCurrentPage}
+      />
       <ItemModal
         open={isModalOpen}
         onClose={handleClose}
