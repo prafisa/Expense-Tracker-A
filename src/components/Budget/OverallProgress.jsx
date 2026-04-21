@@ -2,7 +2,7 @@
 import { Target } from 'lucide-react'
 
 export default function OverallProgress({ totalSpent, totalAllocated, overallPct }) {
-  const fmt = (n) => `Rs.${n.toLocaleString()}`
+  const fmt = (n) => `Rs. ${n.toLocaleString()}`
   
   return (
     <div className="bg-white border border-zinc-100 rounded-xl p-5 mb-5">

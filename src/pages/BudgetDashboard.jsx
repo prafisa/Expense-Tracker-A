@@ -74,10 +74,10 @@ export default function BudgetPage() {
     setBudgets(prev => prev.filter(b => b.id !== id))
   }
 
-  const fmt = (n) => `Rs.${n.toLocaleString()}`
+  const fmt = (n) => `Rs. ${n.toLocaleString()}`
 
   return (
-    <div className="max-w-4xl mx-auto px-1">
+    <div className="max-w-5xl px-1">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-xl font-semibold text-zinc-800">Budget</h1>
