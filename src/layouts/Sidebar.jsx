@@ -15,9 +15,10 @@ const links = [
   { to: '/transactions', label: 'Transactions', icon: ArrowLeftRight },
   { to: '/income',       label: 'Income',       icon: TrendingUp },
   { to: '/expenses',     label: 'Expenses',     icon: TrendingDown },
-]
+  { to: '/budget',     label: 'Budget',     icon: Wallet },  
 
-export default function Sidebar({ open, onClose }) {
+]
+export default function Sidebar({open,onClose}){
   return (
     <aside
       className={`
