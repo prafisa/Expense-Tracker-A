@@ -1,7 +1,7 @@
 import TransactionSummary from "../components/Transactions/TransactionSummary";
 import TransactionFilters from "../components/Transactions/TransactionFilters";
 import TransactionTable from "../components/Transactions/TransactionTable";
-import Pagination from "../components/Transactions/Pagination";
+import Pagination from "../components/shared/Pagination";
 import data from "../data/transactions.json";
 import ItemModal from "../components/shared/ItemModal";
 import categoriesData from "../data/dashboardData.json";
@@ -34,7 +34,7 @@ export default function Transaction() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-1">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-xl font-medium text-gray-800">Transactions</h1>
         <button

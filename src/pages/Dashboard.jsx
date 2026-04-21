@@ -9,7 +9,7 @@ import RecentTransactions from "../components/Dashboard/RecentTransactions";
 export default function Dashboard() {
     console.log("categoryData:", data.categoryData)
   return (
-    <div className="mx-5 bg-gray-50 p-4">
+    <div className=" bg-gray-50 p-1">
 
       {/* Header */}
       <div className="flex justify-between items-center mb-6">
