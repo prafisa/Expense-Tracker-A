@@ -38,26 +38,26 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-white font-sans">
+    <div className="flex min-h-screen bg-gray-50 font-sans">
 
       {/* Main content */}
-      <main className="flex-1 min-w-0 px-6 py-5 flex flex-col gap-4">
+      <main className="flex-1 min-w-0 px-1 py-1 flex flex-col gap-4">
 
         {/* Top bar */}
         <div className="flex items-center justify-between gap-3">
-          <h1 className="text-[17px] font-medium text-gray-900">Categories</h1>
+          <h1 className="text-[20px] font-medium text-gray-900">Categories</h1>
 
           <div className="flex items-center gap-2">
             {/* Search */}
-            <div className="flex items-center gap-1.5 h-[30px] border border-gray-200 rounded-lg px-2.5 bg-gray-50 min-w-[150px]">
-              <Search size={13} className="text-gray-400 flex-shrink-0" />
-              <span className="text-[12px] text-gray-400">Search categories...</span>
+            <div className="flex items-center gap-1.5 h-[32px] border border-gray-200 rounded-lg px-2.5 bg-gray-50 min-w-[150px]">
+              <Search size={14} className="text-gray-400 flex-shrink-0" />
+              <span className="text-[13px] text-gray-400">Search categories...</span>
             </div>
 
             {/* Add button */}
             <button
               onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1.5 h-[30px] px-3 bg-gray-900 text-white text-[12px] font-medium rounded-lg hover:bg-gray-700 transition-colors"
+              className="flex items-center gap-1.5 h-[32px] px-3 bg-gray-900 text-white text-[13px] font-medium rounded-lg hover:bg-gray-700 transition-colors"
             >
               <Plus size={13} />
               Add category

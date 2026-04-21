@@ -17,10 +17,10 @@ export default function CategoryStatCards() {
           className="bg-gray-100 rounded-lg px-3 py-2.5 "
         >
           <div className="flex items-center gap-1.5 text-[11px] text-gray-500 mb-1">
-            <Icon size={11} />
+            <Icon size={13} />
             {label}
           </div>
-          <div className="text-[20px] font-medium text-gray-900">{value}</div>
+          <div className="text-[23px] font-medium text-gray-900">{value}</div>
         </div>
       ))}
     </div>

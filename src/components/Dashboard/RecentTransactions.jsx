@@ -50,7 +50,7 @@ const RecentTransactions = ({ transactions = [] }) => {
 
       {/* Amount */}
       <span className={`text-sm font-medium ${txn.type === "INCOME" ? "text-green-600" : "text-red-500"}`}>
-        {txn.type === "INCOME" ? `+Rs.${txn.amount}` : `-Rs.${txn.amount}`}
+        {txn.type === "INCOME" ? `+Rs. ${txn.amount}` : `-Rs. ${txn.amount}`}
       </span>
     </li>
   ))}

@@ -25,12 +25,12 @@ const DailyChart = ({ data }) => {
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
           <XAxis dataKey="day" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
           <YAxis
-            tickFormatter={(v) => `Rs.${v}`}
+            tickFormatter={(v) => `Rs. ${v}`}
             tick={{ fontSize: 11 }}
             axisLine={false}
             tickLine={false}
           />
-          <Tooltip formatter={(v) => `Rs.${v}`} />
+          <Tooltip formatter={(v) => `Rs. ${v}`} />
           <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
             {data.map((_, index) => (
               <Cell
