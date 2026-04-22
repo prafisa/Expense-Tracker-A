@@ -6,7 +6,9 @@ namespace ExpenseTracker.API.DTOs.Income
     public class UpdateIncomeRequest
     {
         [Required]
-        public PaymentSource Source { get; set; }
+        public PaymentMethod Method { get; set; }
+
+        public string? Source { get; set; }
 
         [Required]
         [Range(0.01, double.MaxValue, ErrorMessage = "Amount must be greater than 0")]

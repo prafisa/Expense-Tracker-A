@@ -1,6 +1,6 @@
 namespace ExpenseTracker.API.Enums
 {
-    public enum PaymentSource
+    public enum PaymentMethod
     {
         CASH,
         ESEWA,
