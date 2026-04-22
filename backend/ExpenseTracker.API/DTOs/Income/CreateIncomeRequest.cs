@@ -7,7 +7,9 @@ namespace ExpenseTracker.API.DTOs.Income
     {
 
         [Required]
-        public PaymentSource Source { get; set; } 
+        public PaymentMethod Method { get; set; }
+
+        public string? Source { get; set; } 
 
 
         [Required]

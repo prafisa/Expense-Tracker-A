@@ -37,9 +37,9 @@ namespace ExpenseTracker.API.Data
                 entity.Property(t => t.Name).IsRequired().HasMaxLength(150);
                 entity.Property(t => t.Type).IsRequired()
                       .HasConversion<string>();
-                entity.Property(t => t.Source).IsRequired()
+                entity.Property(t => t.Method).IsRequired()
                       .HasConversion<string>();
-                entity.Property(t => t.Reason).HasMaxLength(255);
+                entity.Property(t => t.Source).HasMaxLength(255);
                 entity.Property(t => t.Amount).HasColumnType("decimal(18,2)");
                 entity.Property(t => t.Date).IsRequired();
 
@@ -53,7 +53,7 @@ namespace ExpenseTracker.API.Data
             modelBuilder.Entity<Income>(entity =>
             {
                 entity.HasKey(i => i.Id);
-                entity.Property(i => i.Source).IsRequired()
+                entity.Property(i => i.Method).IsRequired()
                       .HasConversion<string>();
                 entity.Property(i => i.Amount).HasColumnType("decimal(18,2)");
                 entity.Property(i => i.Date).IsRequired();
@@ -68,7 +68,7 @@ namespace ExpenseTracker.API.Data
             modelBuilder.Entity<Expense>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Source).IsRequired()
+                entity.Property(e => e.Method).IsRequired()
                       .HasConversion<string>();
                 entity.Property(e => e.Reason).HasMaxLength(255);
                 entity.Property(e => e.Amount).HasColumnType("decimal(18,2)");
