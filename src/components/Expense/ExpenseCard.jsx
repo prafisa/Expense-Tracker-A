@@ -20,7 +20,7 @@ function ExpenseCard({ expense, onEdit, onDelete }) {
 
       <td className="py-4">
         <p className="text-sm text-slate-400">{expense.date}</p>
-      </td>
+      </td> 
 
       <td className="py-4">
         <span className="bg-blue-50 text-blue-500 text-xs px-3 py-1 rounded-full">

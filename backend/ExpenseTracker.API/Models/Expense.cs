@@ -11,7 +11,7 @@ namespace ExpenseTracker.API.Models
         public DateTime Date { get; set; }
 
         // Foreign key
-        public int CategoryId { get; set; }
+        public int CategoryId { get; set; } 
         public Category Category { get; set; } = null!;
     }
 }
