@@ -7,7 +7,7 @@ namespace ExpenseTracker.API.DTOs.Expense
     {
         
         [Required]
-        public PaymentSource Source { get; set; } 
+        public PaymentMethod Method { get; set; } 
 
         [MaxLength(255)]
         public string? Reason { get; set; }

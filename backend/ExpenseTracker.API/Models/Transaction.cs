@@ -7,8 +7,8 @@ namespace ExpenseTracker.API.Models
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public TransactionType Type { get; set; }
-        public PaymentSource Source { get; set; }
-        public string? Reason { get; set; }
+        public  PaymentMethod Method { get; set; }
+        public string? Source { get; set; }
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
 
