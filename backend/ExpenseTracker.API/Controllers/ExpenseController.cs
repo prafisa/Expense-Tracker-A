@@ -26,7 +26,7 @@ namespace ExpenseTracker.API.Controllers
                 {
                     Id = e.Id,
                     Method = e.Method,
-                    Reason = e.Reason,
+                    Reason = e.Reason,  
                     Amount = e.Amount,
                     Date = e.Date,
                     CategoryId = e.CategoryId,
