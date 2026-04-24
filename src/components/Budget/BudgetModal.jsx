@@ -28,7 +28,7 @@ const BudgetModal = ({ isOpen, onClose, onSubmit, initialData, selectedMonth, ti
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm transition-all"
+      className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-xs transition-all"
       onClick={handleBackdropClick}
     >
       <div className="relative w-full max-w-md mx-4 animate-in fade-in zoom-in duration-200">

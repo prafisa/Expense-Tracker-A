@@ -311,19 +311,19 @@ const BudgetManager = () => {
         <div className="mb-6">
           <div className="bg-slate-50 border border-slate-200 rounded-lg p-5">
             <div className="grid grid-cols-3 gap-6">
-              <div>
+              <div className='text-center '>
                 <p className="text-xs text-slate-500 uppercase tracking-wide">Total Budget</p>
                 <p className="text-2xl font-semibold text-slate-900 mt-1">
                   {formatCurrency(summary.totalBudget)}
                 </p>
               </div>
-              <div>
+              <div className='text-center '>
                 <p className="text-xs text-slate-500 uppercase tracking-wide">Categories</p>
                 <p className="text-2xl font-semibold text-slate-900 mt-1">
                   {summary.categoryCount}
                 </p>
               </div>
-              <div>
+              <div className='text-center '>
                 <p className="text-xs text-slate-500 uppercase tracking-wide">Period</p>
                 <p className="text-base font-medium text-slate-700 mt-1">
                   {summary.month === 'All' ? 'All Time' : new Date(summary.month + '-01').toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
