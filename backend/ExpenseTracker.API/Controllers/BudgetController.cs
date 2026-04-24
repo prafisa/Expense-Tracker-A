@@ -7,27 +7,40 @@ namespace ExpenseTracker.API.Controllers
     [ApiController]
     public class BudgetController : ControllerBase
     {
-        // In-memory storage for demo purposes
-        // In production, inject your service/repository
         private static List<BudgetResponse> _budgets = new();
         private static int _nextId = 1;
+        private static readonly object _lock = new object();
 
         public BudgetController()
         {
-            // Optional: Add some sample data
-            if (!_budgets.Any())
+            lock (_lock)
             {
-                SeedSampleData();
+                if (!_budgets.Any())
+                {
+                    SeedSampleData();
+                }
             }
         }
 
         /// <summary>
-        /// Get all budgets
+        /// Get all budgets with optional year and month filters
         /// </summary>
         [HttpGet]
-        public ActionResult<IEnumerable<BudgetResponse>> GetAllBudgets()
+        public ActionResult<IEnumerable<BudgetResponse>> GetAllBudgets([FromQuery] int? year = null, [FromQuery] int? month = null)
         {
-            return Ok(_budgets);
+            var query = _budgets.AsEnumerable();
+            
+            if (year.HasValue)
+            {
+                query = query.Where(b => b.Month.StartsWith($"{year}-"));
+            }
+            
+            if (month.HasValue && year.HasValue)
+            {
+                query = query.Where(b => b.Month == $"{year}-{month:D2}");
+            }
+            
+            return Ok(query.ToList());
         }
 
         /// <summary>
@@ -37,12 +50,10 @@ namespace ExpenseTracker.API.Controllers
         public ActionResult<BudgetResponse> GetBudgetById(int id)
         {
             var budget = _budgets.FirstOrDefault(b => b.Id == id);
-
             if (budget == null)
             {
                 return NotFound(new { message = $"Budget with ID {id} not found" });
             }
-
             return Ok(budget);
         }
 
@@ -52,7 +63,6 @@ namespace ExpenseTracker.API.Controllers
         [HttpGet("month/{month}")]
         public ActionResult<IEnumerable<BudgetResponse>> GetBudgetsByMonth(string month)
         {
-            // Validate month format
             if (!System.Text.RegularExpressions.Regex.IsMatch(month, @"^\d{4}-\d{2}$"))
             {
                 return BadRequest(new { message = "Month must be in format YYYY-MM" });
@@ -63,27 +73,15 @@ namespace ExpenseTracker.API.Controllers
         }
 
         /// <summary>
-        /// Get budget by category and month
+        /// Get available years and months
         /// </summary>
-        [HttpGet("by-category")]
-        public ActionResult<BudgetResponse> GetBudgetByCategoryAndMonth(
-            [FromQuery] int categoryId,
-            [FromQuery] string month)
+        [HttpGet("available-dates")]
+        public ActionResult<object> GetAvailableDates()
         {
-            // Validate month format
-            if (!System.Text.RegularExpressions.Regex.IsMatch(month, @"^\d{4}-\d{2}$"))
-            {
-                return BadRequest(new { message = "Month must be in format YYYY-MM" });
-            }
-
-            var budget = _budgets.FirstOrDefault(b => b.CategoryId == categoryId && b.Month == month);
-
-            if (budget == null)
-            {
-                return NotFound(new { message = $"Budget not found for Category ID {categoryId} in {month}" });
-            }
-
-            return Ok(budget);
+            var years = _budgets.Select(b => int.Parse(b.Month.Split('-')[0])).Distinct().OrderBy(y => y).ToList();
+            var months = Enumerable.Range(1, 12).Select(m => new { Value = m, Name = new DateTime(2000, m, 1).ToString("MMMM") }).ToList();
+            
+            return Ok(new { years, months });
         }
 
         /// <summary>
@@ -92,77 +90,82 @@ namespace ExpenseTracker.API.Controllers
         [HttpPost]
         public ActionResult<BudgetResponse> CreateBudget([FromBody] CreateBudgetRequest request)
         {
-            // Check if budget already exists for this category and month
-            var existingBudget = _budgets.FirstOrDefault(b =>
-                b.CategoryId == request.CategoryId && b.Month == request.Month);
-
-            if (existingBudget != null)
+            lock (_lock)
             {
-                return Conflict(new
+                // Validate
+                if (request.Allocated <= 0)
                 {
-                    message = $"Budget already exists for Category ID {request.CategoryId} in {request.Month}"
-                });
+                    return BadRequest(new { message = "Allocated amount must be greater than 0" });
+                }
+
+                // Check for duplicates
+                var existingBudget = _budgets.FirstOrDefault(b =>
+                    b.CategoryId == request.CategoryId && b.Month == request.Month);
+
+                if (existingBudget != null)
+                {
+                    return Conflict(new
+                    {
+                        message = $"Budget already exists for Category ID {request.CategoryId} in {request.Month}"
+                    });
+                }
+
+                // Create new budget
+                var newBudget = new BudgetResponse
+                {
+                    Id = _nextId++,
+                    Allocated = request.Allocated,
+                    Month = request.Month,
+                    CategoryId = request.CategoryId,
+                    CategoryName = GetCategoryName(request.CategoryId)
+                };
+
+                _budgets.Add(newBudget);
+                return CreatedAtAction(nameof(GetBudgetById), new { id = newBudget.Id }, newBudget);
             }
-
-            // Create new budget
-            var newBudget = new BudgetResponse
-            {
-                Id = _nextId++,
-                Allocated = request.Allocated,
-                Month = request.Month,
-                CategoryId = request.CategoryId,
-                CategoryName = GetCategoryName(request.CategoryId) // You'll need to implement this
-            };
-
-            _budgets.Add(newBudget);
-
-            return CreatedAtAction(nameof(GetBudgetById), new { id = newBudget.Id }, newBudget);
         }
 
         /// <summary>
-        /// Update an existing budget
+        /// Update an existing budget - FIXED VERSION
         /// </summary>
         [HttpPut("{id}")]
         public ActionResult<BudgetResponse> UpdateBudget(int id, [FromBody] UpdateBudgetRequest request)
         {
-            var existingBudget = _budgets.FirstOrDefault(b => b.Id == id);
-
-            if (existingBudget == null)
+            Console.WriteLine($"UpdateBudget called with ID: {id}");
+            Console.WriteLine($"Request data: Allocated={request.Allocated}, Month={request.Month}, CategoryId={request.CategoryId}");
+            
+            lock (_lock)
             {
-                return NotFound(new { message = $"Budget with ID {id} not found" });
-            }
-
-            // Check if another budget exists with same category and month (excluding current)
-            var duplicateBudget = _budgets.FirstOrDefault(b =>
-                b.Id != id &&
-                b.CategoryId == request.CategoryId &&
-                b.Month == request.Month);
-
-            if (duplicateBudget != null)
-            {
-                return Conflict(new
+                var existingBudget = _budgets.FirstOrDefault(b => b.Id == id);
+                if (existingBudget == null)
                 {
-                    message = $"Another budget already exists for Category ID {request.CategoryId} in {request.Month}"
-                });
+                    Console.WriteLine($"Budget with ID {id} not found");
+                    return NotFound(new { message = $"Budget with ID {id} not found" });
+                }
+
+                // Check for duplicate (excluding current budget)
+                var duplicateBudget = _budgets.FirstOrDefault(b =>
+                    b.Id != id &&
+                    b.CategoryId == request.CategoryId &&
+                    b.Month == request.Month);
+
+                if (duplicateBudget != null)
+                {
+                    return Conflict(new
+                    {
+                        message = $"Another budget already exists for Category ID {request.CategoryId} in {request.Month}"
+                    });
+                }
+
+                // Update budget
+                existingBudget.Allocated = request.Allocated;
+                existingBudget.Month = request.Month;
+                existingBudget.CategoryId = request.CategoryId;
+                existingBudget.CategoryName = GetCategoryName(request.CategoryId);
+                
+                Console.WriteLine($"Budget updated successfully: {existingBudget.Id}");
+                return Ok(existingBudget);
             }
-
-            // Update budget
-            existingBudget.Allocated = request.Allocated;
-            existingBudget.Month = request.Month;
-            existingBudget.CategoryId = request.CategoryId;
-            existingBudget.CategoryName = GetCategoryName(request.CategoryId);
-
-            return Ok(existingBudget);
-        }
-
-        /// <summary>
-        /// Partially update a budget (PATCH)
-        /// </summary>
-        [HttpPatch("{id}")]
-        public ActionResult<BudgetResponse> PatchBudget(int id, [FromBody] UpdateBudgetRequest request)
-        {
-            // Same as PUT for simplicity, can be customized for partial updates
-            return UpdateBudget(id, request);
         }
 
         /// <summary>
@@ -171,15 +174,17 @@ namespace ExpenseTracker.API.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteBudget(int id)
         {
-            var budget = _budgets.FirstOrDefault(b => b.Id == id);
-
-            if (budget == null)
+            lock (_lock)
             {
-                return NotFound(new { message = $"Budget with ID {id} not found" });
-            }
+                var budget = _budgets.FirstOrDefault(b => b.Id == id);
+                if (budget == null)
+                {
+                    return NotFound(new { message = $"Budget with ID {id} not found" });
+                }
 
-            _budgets.Remove(budget);
-            return NoContent();
+                _budgets.Remove(budget);
+                return NoContent();
+            }
         }
 
         /// <summary>
@@ -188,31 +193,23 @@ namespace ExpenseTracker.API.Controllers
         [HttpDelete("month/{month}")]
         public IActionResult DeleteBudgetsByMonth(string month)
         {
-            // Validate month format
             if (!System.Text.RegularExpressions.Regex.IsMatch(month, @"^\d{4}-\d{2}$"))
             {
                 return BadRequest(new { message = "Month must be in format YYYY-MM" });
             }
 
-            var budgetsToDelete = _budgets.Where(b => b.Month == month).ToList();
-            int deletedCount = budgetsToDelete.Count;
-
-            foreach (var budget in budgetsToDelete)
+            lock (_lock)
             {
-                _budgets.Remove(budget);
+                var budgetsToDelete = _budgets.Where(b => b.Month == month).ToList();
+                int deletedCount = budgetsToDelete.Count;
+
+                foreach (var budget in budgetsToDelete)
+                {
+                    _budgets.Remove(budget);
+                }
+
+                return Ok(new { message = $"Deleted {deletedCount} budget(s) for month {month}" });
             }
-
-            return Ok(new { message = $"Deleted {deletedCount} budget(s) for month {month}" });
-        }
-
-        /// <summary>
-        /// Check if budget exists (HEAD request)
-        /// </summary>
-        [HttpHead("{id}")]
-        public IActionResult CheckBudgetExists(int id)
-        {
-            var exists = _budgets.Any(b => b.Id == id);
-            return exists ? Ok() : NotFound();
         }
 
         /// <summary>
@@ -221,7 +218,6 @@ namespace ExpenseTracker.API.Controllers
         [HttpGet("summary/{month}")]
         public ActionResult<object> GetBudgetSummary(string month)
         {
-            // Validate month format
             if (!System.Text.RegularExpressions.Regex.IsMatch(month, @"^\d{4}-\d{2}$"))
             {
                 return BadRequest(new { message = "Month must be in format YYYY-MM" });
@@ -251,11 +247,8 @@ namespace ExpenseTracker.API.Controllers
             return Ok(summary);
         }
 
-        // Helper method to get category name
-        // In production, this would come from your Category service/repository
         private string GetCategoryName(int categoryId)
         {
-            // This is a placeholder. Replace with actual category lookup
             var categories = new Dictionary<int, string>
             {
                 { 1, "Food & Dining" },
@@ -265,22 +258,30 @@ namespace ExpenseTracker.API.Controllers
                 { 5, "Utilities" },
                 { 6, "Healthcare" },
                 { 7, "Education" },
-                { 8, "Rent/Mortgage" }
+                { 8, "Rent/Mortgage" },
+                { 9, "Insurance" },
+                { 10, "Savings" }
             };
 
-            return categories.ContainsKey(categoryId) ? categories[categoryId] : $"Category {categoryId}";
+            return categories.GetValueOrDefault(categoryId, $"Category {categoryId}");
         }
 
-        // Seed sample data
         private void SeedSampleData()
         {
-            var sampleBudgets = new[]
+            _budgets.Clear();
+            _nextId = 1;
+            
+            var sampleBudgets = new List<BudgetResponse>
             {
-                new BudgetResponse { Id = _nextId++, Allocated = 500.00m, Month = "2024-01", CategoryId = 1, CategoryName = "Food & Dining" },
-                new BudgetResponse { Id = _nextId++, Allocated = 200.00m, Month = "2024-01", CategoryId = 2, CategoryName = "Transportation" },
-                new BudgetResponse { Id = _nextId++, Allocated = 150.00m, Month = "2024-01", CategoryId = 3, CategoryName = "Entertainment" },
-                new BudgetResponse { Id = _nextId++, Allocated = 500.00m, Month = "2024-02", CategoryId = 1, CategoryName = "Food & Dining" },
-                new BudgetResponse { Id = _nextId++, Allocated = 100.00m, Month = "2024-02", CategoryId = 4, CategoryName = "Shopping" }
+                new BudgetResponse { Id = _nextId++, Allocated = 750.00m, Month = "2024-01", CategoryId = 1, CategoryName = GetCategoryName(1) },
+                new BudgetResponse { Id = _nextId++, Allocated = 300.00m, Month = "2024-01", CategoryId = 2, CategoryName = GetCategoryName(2) },
+                new BudgetResponse { Id = _nextId++, Allocated = 200.00m, Month = "2024-01", CategoryId = 3, CategoryName = GetCategoryName(3) },
+                new BudgetResponse { Id = _nextId++, Allocated = 650.00m, Month = "2024-02", CategoryId = 1, CategoryName = GetCategoryName(1) },
+                new BudgetResponse { Id = _nextId++, Allocated = 150.00m, Month = "2024-02", CategoryId = 4, CategoryName = GetCategoryName(4) },
+                new BudgetResponse { Id = _nextId++, Allocated = 800.00m, Month = "2024-03", CategoryId = 1, CategoryName = GetCategoryName(1) },
+                new BudgetResponse { Id = _nextId++, Allocated = 350.00m, Month = "2024-03", CategoryId = 5, CategoryName = GetCategoryName(5) },
+                new BudgetResponse { Id = _nextId++, Allocated = 900.00m, Month = "2024-04", CategoryId = 1, CategoryName = GetCategoryName(1) },
+                new BudgetResponse { Id = _nextId++, Allocated = 400.00m, Month = "2024-04", CategoryId = 2, CategoryName = GetCategoryName(2) }
             };
 
             _budgets.AddRange(sampleBudgets);
