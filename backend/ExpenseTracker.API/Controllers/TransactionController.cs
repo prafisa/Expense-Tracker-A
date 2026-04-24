@@ -11,9 +11,9 @@ namespace ExpenseTracker.API.Controllers
     [ApiController]
     public class TransactionController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly AppDbContext _context;
 
-        public TransactionController(ApplicationDbContext context)
+        public TransactionController(AppDbContext context)
         {
             _context = context;
         }
@@ -154,8 +154,8 @@ namespace ExpenseTracker.API.Controllers
             if (!transactions.Any())
                 return Ok(new { message = $"No transactions found for month {month}.", data = new List<object>() });
 
-            var totalIncome = transactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
-            var totalExpense = transactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+            var totalIncome = transactions.Where(t => t.Type == TransactionType.INCOME).Sum(t => t.Amount);
+            var totalExpense = transactions.Where(t => t.Type == TransactionType.EXPENSE).Sum(t => t.Amount);
 
             var byCategory = transactions
                 .GroupBy(t => new { t.CategoryId, t.Category.Name })
