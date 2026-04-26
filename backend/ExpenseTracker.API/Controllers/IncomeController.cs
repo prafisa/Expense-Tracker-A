@@ -73,6 +73,19 @@ public class IncomeController : ControllerBase
         };
 
         _context.Incomes.Add(income);
+
+         var transaction = new Transaction
+    {
+       
+        Type = TransactionType.INCOME,
+        Method = request.Method,
+        Source = request.Source,
+        Amount = request.Amount,
+        Date = request.Date,
+        CategoryId = request.CategoryId
+    };
+
+    _context.Transactions.Add(transaction);
         await _context.SaveChangesAsync();
 
         var response = new IncomeResponse

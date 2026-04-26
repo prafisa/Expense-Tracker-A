@@ -1,10 +1,8 @@
 using ExpenseTracker.API.Data;
 using ExpenseTracker.API.DTOs.Transaction;
 using ExpenseTracker.API.Enums;
-using ExpenseTracker.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ExpenseTracker.API.Controllers
 {
@@ -21,13 +19,14 @@ namespace ExpenseTracker.API.Controllers
 
         // GET: api/transaction
         [HttpGet]
-        public async Task<ActionResult<TransactionResponse>> GetAll(
-            [FromQuery] DateOnly? from,
-            [FromQuery] DateOnly? to,
-            [FromQuery] TransactionType? type,
-            [FromQuery] int? categoryId,
-            [FromQuery] string? search)
+        public async Task<IActionResult> GetAll(
+            DateOnly? from,
+            DateOnly? to,
+            TransactionType? type,
+            int? categoryId,
+            string? search)
         {
+            // 1. Load income + expense separately
             var expenses = await _context.Expenses
                 .Include(e => e.Category)
                 .ToListAsync();
@@ -36,6 +35,7 @@ namespace ExpenseTracker.API.Controllers
                 .Include(i => i.Category)
                 .ToListAsync();
 
+            // 2. Convert to common DTO
             var expenseTransactions = expenses.Select(e => new TransactionResponse
             {
                 Id = e.Id,
@@ -45,8 +45,8 @@ namespace ExpenseTracker.API.Controllers
                 Source = e.Reason,
                 Amount = e.Amount,
                 Date = e.Date,
-                CategoryName = e.Category.Name,
-                CategoryId = e.CategoryId
+                CategoryId = e.CategoryId,
+                CategoryName = e.Category.Name
             });
 
             var incomeTransactions = incomes.Select(i => new TransactionResponse
@@ -58,43 +58,53 @@ namespace ExpenseTracker.API.Controllers
                 Source = i.Source,
                 Amount = i.Amount,
                 Date = i.Date,
-                CategoryName = i.Category.Name,
-                CategoryId = i.CategoryId
+                CategoryId = i.CategoryId,
+                CategoryName = i.Category.Name
             });
 
+            // 3. Merge both lists
             var transactions = expenseTransactions
                 .Concat(incomeTransactions)
                 .AsQueryable();
 
+            // 4. Filters
             if (from.HasValue)
                 transactions = transactions.Where(t => DateOnly.FromDateTime(t.Date) >= from.Value);
+
             if (to.HasValue)
                 transactions = transactions.Where(t => DateOnly.FromDateTime(t.Date) <= to.Value);
+
             if (type.HasValue)
                 transactions = transactions.Where(t => t.Type == type.Value);
+
             if (categoryId.HasValue)
                 transactions = transactions.Where(t => t.CategoryId == categoryId.Value);
+
             if (!string.IsNullOrEmpty(search))
                 transactions = transactions.Where(t => t.Name.Contains(search));
 
+            // 5. Final list
             var result = transactions
                 .OrderByDescending(t => t.Date)
                 .ToList();
 
-            // Calculate summary from the same filtered data
-            var totalIncome = result.Where(t => t.Type == TransactionType.INCOME).Sum(t => t.Amount);
-            var totalExpenses = result.Where(t => t.Type == TransactionType.EXPENSE).Sum(t => t.Amount);
+            // 6. Summary (IMPORTANT FIX: use result)
+            var totalIncome = result
+                .Where(t => t.Type == TransactionType.INCOME)
+                .Sum(t => t.Amount);
+
+            var totalExpense = result
+                .Where(t => t.Type == TransactionType.EXPENSE)
+                .Sum(t => t.Amount);
 
             return Ok(new
             {
-                items = result,
-                 totalIncome,
-              totalExpenses,
-                balance = totalIncome - totalExpenses,
+                transactions = result,   // 👈 IMPORTANT (frontend must use this)
+                totalIncome,
+                totalExpense,
+                balance = totalIncome - totalExpense,
                 transactionCount = result.Count
             });
         }
-
-        
     }
 }

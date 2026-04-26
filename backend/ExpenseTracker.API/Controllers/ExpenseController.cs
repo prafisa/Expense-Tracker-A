@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.API.Data;
 using ExpenseTracker.API.Models;
 using ExpenseTracker.API.DTOs.Expense;
+using ExpenseTracker.API.Enums;
 
 namespace ExpenseTracker.API.Controllers
 {
@@ -70,6 +71,19 @@ namespace ExpenseTracker.API.Controllers
                 CategoryId = request.CategoryId
             };
             _context.Expenses.Add(expense);
+
+             var transaction = new Transaction
+    {
+       
+        Type = TransactionType.EXPENSE,
+        Method = request.Method,
+        Source = request.Reason,
+        Amount = request.Amount,
+        Date = request.Date,
+        CategoryId = request.CategoryId
+    };
+
+    _context.Transactions.Add(transaction);
             await _context.SaveChangesAsync();
             var dto = new ExpenseDto
             {
