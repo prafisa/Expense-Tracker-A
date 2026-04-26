@@ -3,8 +3,32 @@
   "WorkspaceRootPath": "D:\\Aster Training\\Expense-Tracker-A\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\controllers\\incomecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\controllers\\incomecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\controllers\\expensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\controllers\\expensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\models\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\models\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\dtos\\income\\incomeresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\dtos\\income\\incomeresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\models\\income.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\models\\income.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\dtos\\income\\updateincomerequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -15,24 +39,16 @@
       "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\dtos\\income\\createincomerequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\controllers\\incomecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\controllers\\incomecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\controllers\\dashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\models\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\models\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\controllers\\expensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\controllers\\expensecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\migrations\\20260426095747_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\migrations\\20260426095747_initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|d:\\aster training\\expense-tracker-a\\backend\\expensetracker.api\\migrations\\20260426102727_removenameintransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{7891A173-B04F-87AC-6D96-5D02F40E0E20}|backend\\ExpenseTracker.API\\ExpenseTracker.API.csproj|solutionrelative:backend\\expensetracker.api\\migrations\\20260426102727_removenameintransaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -52,37 +68,39 @@
         },
         {
           "DockedWidth": 1327,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 4,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "UpdateIncomeRequest.cs",
-              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\DTOs\\Income\\UpdateIncomeRequest.cs",
-              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\DTOs\\Income\\UpdateIncomeRequest.cs",
-              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\DTOs\\Income\\UpdateIncomeRequest.cs",
-              "RelativeToolTip": "backend\\ExpenseTracker.API\\DTOs\\Income\\UpdateIncomeRequest.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAYAAAAFAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T06:33:48.367Z",
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "CreateIncomeRequest.cs",
-              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\DTOs\\Income\\CreateIncomeRequest.cs",
-              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\DTOs\\Income\\CreateIncomeRequest.cs",
-              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\DTOs\\Income\\CreateIncomeRequest.cs",
-              "RelativeToolTip": "backend\\ExpenseTracker.API\\DTOs\\Income\\CreateIncomeRequest.cs",
+              "DocumentIndex": 6,
+              "Title": "Income.cs",
+              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Models\\Income.cs",
+              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Models\\Income.cs",
+              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Models\\Income.cs",
+              "RelativeToolTip": "backend\\ExpenseTracker.API\\Models\\Income.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T06:33:43.64Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-26T10:20:50.655Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
+              "Title": "TransactionController.cs",
+              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\TransactionController.cs",
+              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Controllers\\TransactionController.cs",
+              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\TransactionController.cs",
+              "RelativeToolTip": "backend\\ExpenseTracker.API\\Controllers\\TransactionController.cs",
+              "ViewState": "AgIAAEkAAAAAAAAAAADwv1AAAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T10:05:31.76Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "IncomeResponse.cs",
               "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\DTOs\\Income\\IncomeResponse.cs",
               "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\DTOs\\Income\\IncomeResponse.cs",
@@ -90,41 +108,108 @@
               "RelativeToolTip": "backend\\ExpenseTracker.API\\DTOs\\Income\\IncomeResponse.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T06:31:55.469Z",
+              "WhenOpened": "2026-04-26T06:31:55.469Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "DashboardController.cs",
+              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\DashboardController.cs",
+              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Controllers\\DashboardController.cs",
+              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\DashboardController.cs",
+              "RelativeToolTip": "backend\\ExpenseTracker.API\\Controllers\\DashboardController.cs",
+              "ViewState": "AgIAADoAAAAAAAAAAAAUwEQAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T02:26:57.18Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "IncomeController.cs",
-              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\IncomeController.cs",
-              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Controllers\\IncomeController.cs",
-              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\IncomeController.cs*",
-              "RelativeToolTip": "backend\\ExpenseTracker.API\\Controllers\\IncomeController.cs*",
-              "ViewState": "AgIAABMAAAAAAAAAAAAgwB4AAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T06:25:09.986Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
               "Title": "Transaction.cs",
               "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Models\\Transaction.cs",
               "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Models\\Transaction.cs",
               "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Models\\Transaction.cs",
               "RelativeToolTip": "backend\\ExpenseTracker.API\\Models\\Transaction.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAgwBAAAAApAAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAYAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-26T02:44:16.134Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 1,
+              "Title": "IncomeController.cs",
+              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\IncomeController.cs",
+              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Controllers\\IncomeController.cs",
+              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\IncomeController.cs",
+              "RelativeToolTip": "backend\\ExpenseTracker.API\\Controllers\\IncomeController.cs",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAIwE0AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T06:25:09.986Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ExpenseController.cs",
+              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\ExpenseController.cs",
+              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Controllers\\ExpenseController.cs",
+              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\ExpenseController.cs",
+              "RelativeToolTip": "backend\\ExpenseTracker.API\\Controllers\\ExpenseController.cs",
+              "ViewState": "AgIAAGIAAAAAAAAAAAAIwHAAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-24T06:50:06.863Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "20260426102727_removenameintransaction.cs",
+              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Migrations\\20260426102727_removenameintransaction.cs",
+              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Migrations\\20260426102727_removenameintransaction.cs",
+              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Migrations\\20260426102727_removenameintransaction.cs",
+              "RelativeToolTip": "backend\\ExpenseTracker.API\\Migrations\\20260426102727_removenameintransaction.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T10:27:27.895Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "CreateIncomeRequest.cs",
+              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\DTOs\\Income\\CreateIncomeRequest.cs",
+              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\DTOs\\Income\\CreateIncomeRequest.cs",
+              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\DTOs\\Income\\CreateIncomeRequest.cs",
+              "RelativeToolTip": "backend\\ExpenseTracker.API\\DTOs\\Income\\CreateIncomeRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T06:33:43.64Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "20260426095747_initial.cs",
+              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Migrations\\20260426095747_initial.cs",
+              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Migrations\\20260426095747_initial.cs",
+              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Migrations\\20260426095747_initial.cs",
+              "RelativeToolTip": "backend\\ExpenseTracker.API\\Migrations\\20260426095747_initial.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T09:57:48.047Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "UpdateIncomeRequest.cs",
+              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\DTOs\\Income\\UpdateIncomeRequest.cs",
+              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\DTOs\\Income\\UpdateIncomeRequest.cs",
+              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\DTOs\\Income\\UpdateIncomeRequest.cs",
+              "RelativeToolTip": "backend\\ExpenseTracker.API\\DTOs\\Income\\UpdateIncomeRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-26T06:33:48.367Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Program.cs",
               "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Program.cs",
@@ -135,33 +220,8 @@
               "WhenOpened": "2026-04-26T02:29:58.094Z"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "DashboardController.cs",
-              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\DashboardController.cs",
-              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Controllers\\DashboardController.cs",
-              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\DashboardController.cs",
-              "RelativeToolTip": "backend\\ExpenseTracker.API\\Controllers\\DashboardController.cs",
-              "ViewState": "AgIAACEAAAAAAAAAAAAowMUAAAAjAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-26T02:26:57.18Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ExpenseController.cs",
-              "DocumentMoniker": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\ExpenseController.cs",
-              "RelativeDocumentMoniker": "backend\\ExpenseTracker.API\\Controllers\\ExpenseController.cs",
-              "ToolTip": "D:\\Aster Training\\Expense-Tracker-A\\backend\\ExpenseTracker.API\\Controllers\\ExpenseController.cs",
-              "RelativeToolTip": "backend\\ExpenseTracker.API\\Controllers\\ExpenseController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAEAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-24T06:50:06.863Z"
-            },
-            {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             }
           ]
         }
