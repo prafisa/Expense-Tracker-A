@@ -49,6 +49,7 @@ export async function getExpenseCategories() {
   const data = await response.json()
   return data.map((cat) => ({
     ...cat,
-    icon: iconMap[cat.icon] || "📦"
+    icon: iconMap[cat.icon] || "📦",
+    type: cat.type?.toString().toLowerCase() || "expense"
   }))
 }
