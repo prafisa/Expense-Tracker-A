@@ -1,4 +1,6 @@
+// UpdateCategoryRequest.cs
 using System.ComponentModel.DataAnnotations;
+using ExpenseTracker.API.Enums;
 
 namespace ExpenseTracker.API.DTOs.Category
 {
@@ -9,7 +11,7 @@ namespace ExpenseTracker.API.DTOs.Category
         public string Name { get; set; } = string.Empty;
 
         [Required]
-        public string Type { get; set; } = string.Empty;
+        public TransactionType Type { get; set; }      // ← was string
 
         [MaxLength(255)]
         public string? Description { get; set; }
