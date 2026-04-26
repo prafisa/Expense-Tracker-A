@@ -1,47 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ExpenseSummary from "../components/Expense/ExpenseSummary";
 import ExpenseList from "../components/Expense/ExpenseList";
-import initialExpenses from "../data/expenses";
 import ItemModal from "../components/shared/ItemModal";
-import categoriesData from "../data/dashboardData.json";
-import Pagination from "../components/shared/Pagination"   
+import Pagination from "../components/shared/Pagination";
+import { getAllExpenses, createExpense, updateExpense, deleteExpense, getExpenseCategories } from "../api/expenseApi";
 
-const expenseCategories = [
-  { id: 1, name: "Food & Dining", icon: "🍜", type: "EXPENSE" },
-  { id: 2, name: "Transport", icon: "🚌", type: "EXPENSE" },
-  { id: 3, name: "Health", icon: "💊", type: "EXPENSE" },
-  { id: 4, name: "Utilities", icon: "💡", type: "EXPENSE" },
-  { id: 5, name: "Shopping", icon: "🛍️", type: "EXPENSE" },
-  { id: 6, name: "Entertainment", icon: "🎮", type: "EXPENSE" },
-];const ITEMS_PER_PAGE = 5
+const ITEMS_PER_PAGE = 5;
 
 function ExpensePage() {
-  const [expenses, setExpenses] = useState(initialExpenses);
+  const [expenses, setExpenses] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [isModalOpen, setModal] = useState(false);
   const [editData, setEditData] = useState(null);
-  const [currentPage, setCurrentPage]   = useState(1)
+  const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    getAllExpenses().then((data) => setExpenses(data));
+    getExpenseCategories().then((data) => setCategories(data));
+  }, []);
 
-  const totalPages = Math.max(1, Math.ceil(expenses.length / ITEMS_PER_PAGE))
-  const paginated  = expenses.slice(
+  const totalPages = Math.max(1, Math.ceil(expenses.length / ITEMS_PER_PAGE));
+  const paginated = expenses.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
     currentPage * ITEMS_PER_PAGE
-  )
-  const handleSave = (formData) => {
-    if (editData) {
-      setExpenses((prev) =>
-        prev.map((e) => (e.id === editData.id ? { ...e, ...formData } : e)),
-      );
-    } else {
-      const newId = Math.max(...expenses.map((e) => e.id)) + 1;
-      setExpenses((prev) => [{ id: newId, ...formData }, ...prev]);
-    }
-    setEditData(null);
-  };
+  );
 
-  const handleDelete = (id) => {
-    if (window.confirm("Delete this expense?"))
+const handleSave = async (formData) => {
+  const backendData = {
+    method: 1,
+    reason: formData.title,
+    amount: formData.amount,
+    date: formData.date,
+    categoryId: formData.categoryId,
+  }
+
+  if (editData) {
+    const updated = await updateExpense(editData.id, backendData)
+    setExpenses((prev) =>
+      prev.map((e) => (e.id === editData.id ? updated : e))
+    );
+  } else {
+    const newExpense = await createExpense(backendData)
+    setExpenses((prev) => [newExpense, ...prev])
+  }
+  setEditData(null)
+}
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Delete this expense?")) {
+      await deleteExpense(id);
       setExpenses((prev) => prev.filter((e) => e.id !== id));
+    }
   };
 
   const handleEdit = (expense) => {
@@ -71,11 +80,11 @@ function ExpensePage() {
 
       <ExpenseSummary expenses={expenses} />
       <ExpenseList
-        expenses={expenses}
+        expenses={paginated}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />
- <Pagination
+      <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         totalItems={expenses.length}
@@ -88,10 +97,12 @@ function ExpensePage() {
         onSave={handleSave}
         editData={editData}
         lockedType="expense"
-        categories={expenseCategories} 
+        categories={categories}
       />
     </div>
   );
 }
 
 export default ExpensePage;
+
+

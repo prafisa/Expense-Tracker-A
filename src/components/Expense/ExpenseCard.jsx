@@ -1,30 +1,27 @@
-import { Trash2, Pencil } from 'lucide-react'
-
 function ExpenseCard({ expense, onEdit, onDelete }) {   
   return (
     <tr className="border-b border-slate-100 last:border-b-0">
 
       <td className="py-4">
-        <span className="bg-slate-100 text-slate-600 text-xs px-3 py-1 rounded-full">
-          {expense.category}
+        <span className="bg-violet-50 text-violet-600 text-xs px-3 py-1 rounded-full">
+          {expense.categoryName}
         </span>
       </td>
 
       <td className="py-4">
-        <p className="text-sm font-semibold text-slate-800">{expense.title}</p>
+        <p className="text-sm font-semibold text-slate-800">{expense.reason}</p>
+        <p className="text-xs text-slate-400 mt-0.5">{expense.categoryName}</p>
       </td>
 
       <td className="py-4">
-        <p className="text-sm text-slate-400">{expense.reason}</p>
-      </td>
-
-      <td className="py-4">
-        <p className="text-sm text-slate-400">{expense.date}</p>
+        <p className="text-sm text-slate-400">{expense.date.split('T')[0]}</p>
       </td> 
 
       <td className="py-4">
-        <span className="bg-blue-50 text-blue-500 text-xs px-3 py-1 rounded-full">
-          {expense.source}
+        <span className="bg-slate-100 text-slate-500 text-xs px-3 py-1 rounded-full">
+          {expense.method === 1 ? 'Mobile Banking' : 
+           expense.method === 2 ? 'eSewa' : 
+           expense.method === 3 ? 'Cash' : 'Other'}
         </span>
       </td>
 
@@ -36,16 +33,14 @@ function ExpenseCard({ expense, onEdit, onDelete }) {
         <div className="flex items-center gap-2">
           <button
             onClick={() => onEdit(expense)}
-            className="flex items-center gap-1 text-blue-400 text-sm border border-blue-200 px-3 py-1 rounded-lg hover:bg-blue-50 transition-colors"
+            className="text-slate-500 text-sm border border-slate-200 px-3 py-1 rounded-lg hover:bg-slate-50 transition-colors"
           >
-            <Pencil size={13} />
             Edit
           </button>
           <button
             onClick={() => onDelete(expense.id)}
-            className="flex items-center gap-1 text-rose-400 text-sm border border-rose-200 px-3 py-1 rounded-lg hover:bg-rose-50 transition-colors"
+            className="text-rose-400 text-sm border border-rose-200 px-3 py-1 rounded-lg hover:bg-rose-50 transition-colors"
           >
-            <Trash2 size={13} />
             Delete
           </button>
         </div>
