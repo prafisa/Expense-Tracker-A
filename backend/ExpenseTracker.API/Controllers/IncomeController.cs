@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using ExpenseTracker.API.Data;
 using ExpenseTracker.API.DTOs.Income;
 using ExpenseTracker.API.Enums;
@@ -45,15 +46,15 @@ public async Task<ActionResult<IncomeResponse>> GetById(int id)
         if (income == null) return NotFound();
         var response  = new IncomeResponse
         {
-            Id = i.Id,
-            Method = i.Method,
-            Source = i.Source,
-            Amount = i.Amount,
-            Date = i.Date,
-            CategoryId = i.CategoryId,
-            CategoryName = i.Category.Name
+            Id = income.Id,
+            Method = income.Method,
+            Source = income.Source,
+            Amount = income.Amount,
+            Date = income.Date,
+            CategoryId = income.CategoryId,
+            CategoryName = income.Category.Name
         };
-        .return Ok(response);
+        return Ok(response);
 }
 
 [HttpPost]
