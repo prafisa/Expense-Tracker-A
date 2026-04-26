@@ -12,138 +12,189 @@ namespace ExpenseTracker.API.Controllers
     public class CategoryController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(AppDbContext context)
+        public CategoryController(AppDbContext context, ILogger<CategoryController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        // sabai categories list garne, optional type filter satha
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryResponse>>> GetAll(
             [FromQuery] TransactionType? type = null)
         {
-            var query = _context.Categories.AsQueryable();
+            try
+            {
+                var query = _context.Categories.AsQueryable();
 
-            if (type.HasValue)
-                query = query.Where(c => c.Type == type.Value);
+                if (type.HasValue)
+                    query = query.Where(c => c.Type == type.Value);
 
-            var categories = await query
-                .Select(c => new CategoryResponse
-                {
-                    Id          = c.Id,
-                    Name        = c.Name,
-                    Type        = c.Type,
-                    Description = c.Description,
-                    Icon        = c.Icon,
-                    Color       = c.Color
-                })
-                .ToListAsync();
+                var categories = await query
+                    .Select(c => new CategoryResponse
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        Type = c.Type,
+                        Description = c.Description,
+                        Icon = c.Icon,
+                        Color = c.Color
+                    })
+                    .ToListAsync();
 
-            return Ok(categories);
+                return Ok(categories);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting categories");
+                return StatusCode(500, new { message = "Error retrieving categories" });
+            }
         }
 
-        // id le specific category nikalne
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryResponse>> GetById(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-
-            if (category == null)
-                return NotFound();
-
-            var response = new CategoryResponse
+            try
             {
-                Id          = category.Id,
-                Name        = category.Name,
-                Type        = category.Type,
-                Description = category.Description,
-                Icon        = category.Icon,
-                Color       = category.Color
-            };
+                var category = await _context.Categories.FindAsync(id);
 
-            return Ok(response);
+                if (category == null)
+                    return NotFound(new { message = "Category not found" });
+
+                var response = new CategoryResponse
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    Type = category.Type,
+                    Description = category.Description,
+                    Icon = category.Icon,
+                    Color = category.Color
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting category by id");
+                return StatusCode(500, new { message = "Error retrieving category" });
+            }
         }
 
-        // naya category banauney
         [HttpPost]
         public async Task<ActionResult<CategoryResponse>> Create(CreateCategoryRequest request)
         {
-            var category = new Category
+            try
             {
-                Name        = request.Name,
-                Type        = request.Type,
-                Description = request.Description,
-                Icon        = request.Icon,
-                Color       = request.Color
-            };
+                // Validate required fields
+                if (string.IsNullOrWhiteSpace(request.Name))
+                    return BadRequest(new { message = "Category name is required" });
 
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
+                if (string.IsNullOrWhiteSpace(request.Icon))
+                    return BadRequest(new { message = "Category icon is required" });
 
-            var response = new CategoryResponse
+                var category = new Category
+                {
+                    Name = request.Name,
+                    Type = request.Type,
+                    Description = request.Description ?? "",
+                    Icon = request.Icon,
+                    Color = request.Color ?? "#64748b"
+                };
+
+                _context.Categories.Add(category);
+                await _context.SaveChangesAsync();
+
+                var response = new CategoryResponse
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    Type = category.Type,
+                    Description = category.Description,
+                    Icon = category.Icon,
+                    Color = category.Color
+                };
+
+                return CreatedAtAction(nameof(GetById), new { id = category.Id }, response);
+            }
+            catch (Exception ex)
             {
-                Id          = category.Id,
-                Name        = category.Name,
-                Type        = category.Type,
-                Description = category.Description,
-                Icon        = category.Icon,
-                Color       = category.Color
-            };
-
-            return CreatedAtAction(nameof(GetById), new { id = category.Id }, response);
+                _logger.LogError(ex, "Error creating category");
+                return StatusCode(500, new { message = "Error creating category" });
+            }
         }
 
-        // existing category update garne
         [HttpPut("{id}")]
         public async Task<ActionResult<CategoryResponse>> Update(int id, UpdateCategoryRequest request)
         {
-            var category = await _context.Categories.FindAsync(id);
-
-            if (category == null)
-                return NotFound();
-
-            category.Name        = request.Name;
-            category.Type        = request.Type;
-            category.Description = request.Description;
-            category.Icon        = request.Icon;
-            category.Color       = request.Color;
-
-            await _context.SaveChangesAsync();
-
-            var response = new CategoryResponse
+            try
             {
-                Id          = category.Id,
-                Name        = category.Name,
-                Type        = category.Type,
-                Description = category.Description,
-                Icon        = category.Icon,
-                Color       = category.Color
-            };
+                var category = await _context.Categories.FindAsync(id);
 
-            return Ok(response);
+                if (category == null)
+                    return NotFound(new { message = "Category not found" });
+
+                // Validate required fields
+                if (string.IsNullOrWhiteSpace(request.Name))
+                    return BadRequest(new { message = "Category name is required" });
+
+                if (string.IsNullOrWhiteSpace(request.Icon))
+                    return BadRequest(new { message = "Category icon is required" });
+
+                category.Name = request.Name;
+                category.Type = request.Type;
+                category.Description = request.Description ?? "";
+                category.Icon = request.Icon;
+                category.Color = request.Color ?? "#64748b";
+
+                await _context.SaveChangesAsync();
+
+                var response = new CategoryResponse
+                {
+                    Id = category.Id,
+                    Name = category.Name,
+                    Type = category.Type,
+                    Description = category.Description,
+                    Icon = category.Icon,
+                    Color = category.Color
+                };
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating category");
+                return StatusCode(500, new { message = "Error updating category" });
+            }
         }
 
-        // category delete garne — use ma cha bhane delete nagarne
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            try
+            {
+                var category = await _context.Categories.FindAsync(id);
 
-            if (category == null)
-                return NotFound();
+                if (category == null)
+                    return NotFound(new { message = "Category not found" });
 
-            bool inUse = await _context.Transactions.AnyAsync(t => t.CategoryId == id)
-                      || await _context.Incomes.AnyAsync(i => i.CategoryId == id)
-                      || await _context.Expenses.AnyAsync(e => e.CategoryId == id);
+                bool inUse = await _context.Transactions.AnyAsync(t => t.CategoryId == id)
+                          || await _context.Incomes.AnyAsync(i => i.CategoryId == id)
+                          || await _context.Expenses.AnyAsync(e => e.CategoryId == id);
 
-            if (inUse)
-                return BadRequest("Cannot delete category that is in use.");
+                if (inUse)
+                    return BadRequest(new { message = "Cannot delete category that is in use" });
 
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+                _context.Categories.Remove(category);
+                await _context.SaveChangesAsync();
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting category");
+                return StatusCode(500, new { message = "Error deleting category" });
+            }
         }
     }
 }
