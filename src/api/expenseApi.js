@@ -45,7 +45,7 @@ const iconMap = {
 }
 
 export async function getExpenseCategories() {
-  const response = await fetch("https://localhost:7204/api/category")
+  const response = await fetch("https://localhost:7204/api/category?type=EXPENSE")
   const data = await response.json()
   return data.map((cat) => ({
     ...cat,
