@@ -1,6 +1,10 @@
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
+const FALLBACK = ["#378ADD","#1D9E75","#EF9F27","#D4537E","#7F77DD","#D85A30"];
+
 const DonutChart = ({ data = [] }) => {
+  console.log("DonutChart data:", data); // ← check this
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4">
       <div className="flex justify-between items-center mb-3">
@@ -16,35 +20,39 @@ const DonutChart = ({ data = [] }) => {
         </div>
       ) : (
         <>
-          {/* Legend */}
           <div className="flex flex-wrap gap-2 mb-3">
-            {data.map((item) => (
+            {data.map((item, index) => (
               <span
                 key={item.name}
                 className="flex items-center gap-1 text-xs text-gray-500"
               >
                 <span
                   className="w-3 h-3 rounded-sm inline-block"
-                  style={{ backgroundColor: item.color }}
+                  style={{
+                    // use database color if available, else fallback
+                    backgroundColor: item.color || FALLBACK[index % FALLBACK.length]
+                  }}
                 ></span>
                 {item.name} {item.value}%
               </span>
             ))}
           </div>
 
-          {/* Chart */}
           <div className="flex justify-center">
-            <PieChart width={220} height={250}>
+            <PieChart width={220} height={220}>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
-                innerRadius={55}
-                outerRadius={85}
+                innerRadius={75}
+                outerRadius={105}
                 dataKey="value"
               >
                 {data.map((item, index) => (
-                  <Cell key={index} fill={item.color} />
+                  <Cell
+                    key={index}
+                    fill={item.color || FALLBACK[index % FALLBACK.length]}
+                  />
                 ))}
               </Pie>
               <Tooltip formatter={(v) => `${v}%`} />
