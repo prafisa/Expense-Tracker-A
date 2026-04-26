@@ -13,36 +13,37 @@ namespace ExpenseTracker.API.Controllers
     {
         private readonly AppDbContext _context;
 
-        // database context inject gareko
         public CategoryController(AppDbContext context)
         {
             _context = context;
         }
 
-        // sabai categories list garne API
+        // sabai categories list garne, optional type filter satha
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryResponse>>> GetAll()
+        public async Task<ActionResult<IEnumerable<CategoryResponse>>> GetAll(
+            [FromQuery] TransactionType? type = null)
         {
-            var categories = await _context.Categories
+            var query = _context.Categories.AsQueryable();
+
+            if (type.HasValue)
+                query = query.Where(c => c.Type == type.Value);
+
+            var categories = await query
                 .Select(c => new CategoryResponse
                 {
-                    Id = c.Id,
-                    Name = c.Name,
-                    Type = c.Type.ToString(),
+                    Id          = c.Id,
+                    Name        = c.Name,
+                    Type        = c.Type,
                     Description = c.Description,
-                    Icon = c.Icon,
-                    Color = c.Color
+                    Icon        = c.Icon,
+                    Color       = c.Color
                 })
                 .ToListAsync();
 
             return Ok(categories);
         }
 
-
-        /// <summary>
-        /// Get specific category by id
-        /// </summary>
-        // id ko basis ma specific category nikalne API
+        // id le specific category nikalne
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryResponse>> GetById(int id)
         {
@@ -53,37 +54,28 @@ namespace ExpenseTracker.API.Controllers
 
             var response = new CategoryResponse
             {
-                Id = category.Id,
-                Name = category.Name,
-                Type = category.Type.ToString(),
+                Id          = category.Id,
+                Name        = category.Name,
+                Type        = category.Type,
                 Description = category.Description,
-                Icon = category.Icon,
-                Color = category.Color
+                Icon        = category.Icon,
+                Color       = category.Color
             };
 
             return Ok(response);
         }
 
-        /// <summary>
-        /// Create a new category
-        /// </summary>
-        // naya category add garne API
+        // naya category banauney
         [HttpPost]
         public async Task<ActionResult<CategoryResponse>> Create(CreateCategoryRequest request)
         {
-            // type valid cha ki chaina check garne
-            if (!Enum.TryParse<TransactionType>(request.Type.ToUpper(), out var parsedType))
-            {
-                return BadRequest("Invalid category type. Use INCOME or EXPENSE.");
-            }
-
             var category = new Category
             {
-                Name = request.Name,
-                Type = parsedType,
+                Name        = request.Name,
+                Type        = request.Type,
                 Description = request.Description,
-                Icon = request.Icon,
-                Color = request.Color
+                Icon        = request.Icon,
+                Color       = request.Color
             };
 
             _context.Categories.Add(category);
@@ -91,64 +83,62 @@ namespace ExpenseTracker.API.Controllers
 
             var response = new CategoryResponse
             {
-                Id = category.Id,
-                Name = category.Name,
-                Type = category.Type.ToString(),
+                Id          = category.Id,
+                Name        = category.Name,
+                Type        = category.Type,
                 Description = category.Description,
-                Icon = category.Icon,
-                Color = category.Color
+                Icon        = category.Icon,
+                Color       = category.Color
             };
 
             return CreatedAtAction(nameof(GetById), new { id = category.Id }, response);
         }
 
-        // existing category update garne API
+        // existing category update garne
         [HttpPut("{id}")]
         public async Task<ActionResult<CategoryResponse>> Update(int id, UpdateCategoryRequest request)
         {
             var category = await _context.Categories.FindAsync(id);
 
-            // category bhetena bhane not found pathaune
             if (category == null)
                 return NotFound();
 
-            // type valid cha ki check garne
-            if (!Enum.TryParse<TransactionType>(request.Type.ToUpper(), out var parsedType))
-            {
-                return BadRequest("Invalid category type. Use INCOME or EXPENSE.");
-            }
-
-            // naya data le purano data replace garne
-            category.Name = request.Name;
-            category.Type = parsedType;
+            category.Name        = request.Name;
+            category.Type        = request.Type;
             category.Description = request.Description;
-            category.Icon = request.Icon;
-            category.Color = request.Color;
+            category.Icon        = request.Icon;
+            category.Color       = request.Color;
 
             await _context.SaveChangesAsync();
 
             var response = new CategoryResponse
             {
-                Id = category.Id,
-                Name = category.Name,
-                Type = category.Type.ToString(),
+                Id          = category.Id,
+                Name        = category.Name,
+                Type        = category.Type,
                 Description = category.Description,
-                Icon = category.Icon,
-                Color = category.Color
+                Icon        = category.Icon,
+                Color       = category.Color
             };
 
             return Ok(response);
         }
 
-        // category delete garne API
+        // category delete garne — use ma cha bhane delete nagarne
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var category = await _context.Categories.FindAsync(id);
 
-            // delete garna khojeko category bhetena bhane
             if (category == null)
                 return NotFound();
+
+            bool inUse = await _context.Transactions.AnyAsync(t => t.CategoryId == id)
+                      || await _context.Incomes.AnyAsync(i => i.CategoryId == id)
+                      || await _context.Expenses.AnyAsync(e => e.CategoryId == id);
+
+            if (inUse)
+                return BadRequest("Cannot delete category that is in use.");
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
