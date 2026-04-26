@@ -25,4 +25,8 @@ dist-ssr
 **/Migrations/
 .vs/
 bin/
+<<<<<<< Updated upstream
 obj/
+=======
+obj/
+>>>>>>> Stashed changes
