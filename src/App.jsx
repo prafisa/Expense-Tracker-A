@@ -7,7 +7,7 @@ import Transaction from './pages/Transaction'
 // import BudgetPage from './pages/BudgetDashboard'
 import React from 'react'
 import CategoryPage from './pages/CategoryPage'
-import BudgetManager from './components/Budget/BudgetManager'
+import BudgetManager from './pages/BudgetManager'
 
 
 const router = createBrowserRouter([
