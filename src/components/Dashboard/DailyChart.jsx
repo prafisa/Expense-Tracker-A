@@ -44,12 +44,12 @@ const DailyChart = ({ data = [] }) => {
                 tickLine={false}
               />
               <YAxis
-                tickFormatter={(v) => `$${v}`}
+                tickFormatter={(v) => `Rs.${v}`}
                 tick={{ fontSize: 11 }}
                 axisLine={false}
                 tickLine={false}
               />
-              <Tooltip formatter={(v) => `$${v}`} />
+              <Tooltip formatter={(v) => `Rs.${v}`} />
               <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
                 {data.map((_, index) => (
                   <Cell

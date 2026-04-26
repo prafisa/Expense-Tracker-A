@@ -41,6 +41,37 @@ namespace ExpenseTracker.API.Controllers
             var filtered = await query.ToListAsync();
 
 
+            DateTime? prevFrom = null;
+            DateTime? prevTo = null;
+
+            if (dateFrom.HasValue && dateTo.HasValue)
+            {
+                var range = (dateTo.Value - dateFrom.Value).Days + 1;
+
+                prevFrom = dateFrom.Value.AddDays(-range);
+                prevTo = dateFrom.Value.AddDays(-1);
+            }
+            var prevQuery = _context.Transactions
+                .Include(t => t.Category)
+                .AsQueryable();
+
+            if (prevFrom.HasValue && prevTo.HasValue)
+            {
+                prevQuery = prevQuery.Where(t =>
+                    t.Date >= prevFrom.Value && t.Date <= prevTo.Value);
+            }
+
+            var prevFiltered = await prevQuery.ToListAsync();
+            var prevIncome = prevFiltered
+                .Where(t => t.Type == TransactionType.INCOME)
+                .Sum(t => t.Amount);
+
+            var prevExpense = prevFiltered
+                .Where(t => t.Type == TransactionType.EXPENSE)
+                .Sum(t => t.Amount);
+
+            var prevSavings = prevIncome - prevExpense;
+
             //calculate summary numbers
             //total income in selected period
             var periodIncome = filtered
@@ -73,8 +104,14 @@ namespace ExpenseTracker.API.Controllers
 
             //net balance
             var netBalance = allTimeIncome - allTimeExpense;
+           
+            decimal incomeDiff = periodIncome - prevIncome;
+            decimal expenseDiff = periodExpense - prevExpense;
+            decimal savingsDiff = netSavings - prevSavings;
 
-
+            decimal incomeRate = prevIncome == 0 ? 0 : Math.Round((incomeDiff / prevIncome) * 100, 1);
+            decimal expenseRate = prevExpense == 0 ? 0 : Math.Round((expenseDiff / prevExpense) * 100, 1);
+            decimal savingsRateChange = prevSavings == 0 ? 0 : Math.Round((savingsDiff / prevSavings) * 100, 1);
             //monthly chart data
 
             //groupby groups transaction by momnth
@@ -106,20 +143,21 @@ namespace ExpenseTracker.API.Controllers
 
             //group expense by category name
             var CategoryData = filtered
-                .Where(t => t.Type == TransactionType.EXPENSE)
-                .GroupBy(t => t.Category.Name)
-                .Select(g => new
-                {
-                    name = g.Key, //food
-                    amount = g.Sum(t => t.Amount), //total amount
-                    // percentage = this category / total * 100
-                    percentage = totalExpenseAmount > 0
-                        ? (int)Math.Round(
-                            (g.Sum(t => t.Amount) / totalExpenseAmount) * 100)
-                        : 0
-                })
-                .OrderByDescending(c => c.amount)
-                .ToList();
+    .Where(t => t.Type == TransactionType.EXPENSE)
+    .GroupBy(t => t.Category.Name)
+    .Select(g => new
+    {
+        name = g.Key,
+        icon = g.First().Category.Icon,   // ← add this
+        color = g.First().Category.Color,  // ← add this
+        amount = g.Sum(t => t.Amount),
+        percentage = totalExpenseAmount > 0
+            ? (int)Math.Round(
+                (g.Sum(t => t.Amount) / totalExpenseAmount) * 100)
+            : 0
+    })
+    .OrderByDescending(c => c.amount)
+    .ToList();
 
             //daily chart data
 
@@ -159,38 +197,47 @@ namespace ExpenseTracker.API.Controllers
 
 
             //recent 5 transaction
-            var recentTransactions = filtered
-                .OrderByDescending(t => t.Date)
-                .Take(5)
-                .Select(t => new
-                {
-                    id = t.Id,
-                    name = t.Name,
-                    type = t.Type.ToString(),
-                    categoryName = t.Category.Name,
-                    amount = t.Amount,
-                    date = t.Date,
-                    method = t.Method.ToString(), // ← Method enum
-                    source = t.Source
-                })
-                .ToList();
+
+            var recentTransactions = await query
+     .OrderByDescending(t => t.Date)
+     .Take(5)
+     .Select(t => new
+     {
+         id = t.Id,
+         name = t.Name,
+         type = t.Type.ToString(),
+
+         categoryName = t.Category.Name,
+         categoryIcon = t.Category.Icon,
+         categoryColor = t.Category.Color,
+
+         amount = t.Amount,
+         date = t.Date,
+         method = t.Method.ToString(),
+         source = t.Source
+     })
+     .ToListAsync();
 
             //return everything as json
             return Ok(new
             {
                 // summary cards
-                periodIncome,             // income in selected period
+               netBalance,               // all time balance
+                periodIncome, // income in selected period
+                incomeDiff,
+                incomeRate,
                 periodExpense,            // expense in selected period
+                expenseDiff,
+                expenseRate,
                 netSavings,               // savings in selected period
-                savingsRate,              // savings % in selected period
-                netBalance,               // all time balance
+                savingsRate,
+                savingsDiff,
+                savingsRateChange,// savings % in selected period
 
                 // transaction counts
                 totalTransactions = filtered.Count,
-                totalIncomeTransactions = filtered
-                   .Count(t => t.Type == TransactionType.INCOME),
-                totalExpenseTransactions = filtered
-                   .Count(t => t.Type == TransactionType.EXPENSE),
+                totalIncomeTransactions = filtered.Count(t => t.Type == TransactionType.INCOME),
+                totalExpenseTransactions = filtered.Count(t => t.Type == TransactionType.EXPENSE),
 
                 // chart data
                 monthlyData,    //  bar chart

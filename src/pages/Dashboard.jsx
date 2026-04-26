@@ -6,7 +6,6 @@ import DailyChart from "../components/Dashboard/DailyChart";
 import RecentTransactions from "../components/Dashboard/RecentTransactions";
 
 const API = "https://localhost:7204/api";
-const COLORS = ["#378ADD","#1D9E75","#EF9F27","#D4537E","#7F77DD","#D85A30"];
 
 // ── automatically calculate date ranges ──────────────────
 const getDateRanges = () => {
@@ -36,8 +35,8 @@ export default function Dashboard() {
   // two separate states — one for current month, one for 6 months
   const [summaryData, setSummaryData] = useState(null);
   const [monthlyData, setMonthlyData] = useState(null);
-  const [loading,     setLoading]     = useState(true);
-  const [error,       setError]       = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // runs once when page loads
   useEffect(() => {
@@ -117,51 +116,57 @@ export default function Dashboard() {
   // ── build summary cards — current month ──────────────────
   const summaryCards = [
     {
-      label:    "Total income",
-      value:    `$${summaryData.periodIncome.toLocaleString()}`,
-      change:   `${summaryData.totalIncomeTransactions} transactions`,
-      positive: true
-    },
-    {
-      label:    "Total expenses",
-      value:    `$${summaryData.periodExpense.toLocaleString()}`,
-      change:   `${summaryData.totalExpenseTransactions} transactions`,
-      positive: false
-    },
-    {
-      label:    "Net balance",
-      value:    `$${summaryData.netBalance.toLocaleString()}`,
-      change:   "all time balance",
+      label: "Net balance",
+      value: `Rs.${summaryData.netBalance.toLocaleString()}`,
+      change: "all time balance",
       positive: summaryData.netBalance >= 0
     },
     {
-      label:    "Net savings",
-      value:    `$${summaryData.netSavings.toLocaleString()}`,
-      change:   `${summaryData.savingsRate}% savings rate`,
-      positive: summaryData.netSavings >= 0
+      label: "Total income",
+      value: `Rs.${summaryData.periodIncome.toLocaleString()}`,
+      change: `${summaryData.incomeRate}% vs previous month`,
+      positive: summaryData.incomeRate >= 0
     },
+    {
+      label: "Total expenses",
+      value: `Rs.${summaryData.periodExpense.toLocaleString()}`,
+      change: `${summaryData.expenseRate}% vs previous month`,
+      positive: summaryData.expenseRate <= 0 // negative expense change is actually good
+    },
+    {
+      label: "Net savings",
+      value: `Rs.${summaryData.netSavings.toLocaleString()}`,
+      change: `${summaryData.savingsRateChange}% vs last month`,
+      positive: summaryData.savingsRateChange >= 0
+    }
   ];
 
   // ── donut chart — current month ──────────────────────────
-  const categoryChartData = (summaryData.categoryData || []).map((cat, i) => ({
-    name:  cat.name,
-    value: cat.percentage,
-    color: COLORS[i % COLORS.length],
-  }));
+const categoryChartData = (summaryData.categoryData || []).map((cat) => ({
+  name:  cat.name,
+  value: cat.percentage,
+  color: cat.color,  // ← from database
+}));
 
   // ── recent transactions — current month ──────────────────
   // reshape API data to match component shape
-  const recentTxns = (summaryData.recentTransactions || []).map(t => ({
-    id:       t.id,
-    name:     t.name,
-    type:     t.type,
-    amount:   t.amount,
-    date:     t.date,
-    method:   t.method,
-    source:   t.source,
-    category: { name: t.categoryName },
-  }));
-
+const recentTxns = (summaryData.recentTransactions || []).map(t => ({
+  id:     t.id,
+  name:   t.name,
+  type:   t.type,
+  amount: t.amount,
+  date:   t.date,
+  method: t.method,
+  source: t.source,
+  category: {
+    name:  t.categoryName,
+    icon:  t.categoryIcon,   // ← add this
+    color: t.categoryColor,  // ← add this
+  },
+}));
+console.log("SUMMARY DATA:", summaryData);
+console.log("RECENT TXNS:", summaryData?.recentTransactions);
+console.log("FIRST TXN:", summaryData?.recentTransactions?.[0]);
   return (
     <div className="min-h-screen bg-gray-50 p-6">
 
@@ -171,7 +176,7 @@ export default function Dashboard() {
         <span className="text-sm text-gray-400">
           {new Date().toLocaleDateString("en-US", {
             month: "long",
-            year:  "numeric"
+            year: "numeric"
           })}
         </span>
       </div>
@@ -186,10 +191,8 @@ export default function Dashboard() {
       {/* Charts row */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 
-        {/* monthly bar chart — last 6 months */}
-       
-          <MonthlyChart data={monthlyData.monthlyData || []} />
-        
+                <DailyChart data={summaryData.dailyData || []} />
+
 
         {/* donut chart — current month */}
         <div>
@@ -202,9 +205,11 @@ export default function Dashboard() {
 
         {/* recent transactions — current month, last 5 */}
         <RecentTransactions transactions={recentTxns} />
+{/* monthly bar chart — last 6 months */}
 
+        <MonthlyChart data={monthlyData.monthlyData || []} />
         {/* daily chart — this week, calculated in controller */}
-        <DailyChart data={summaryData.dailyData || []} />
+
       </div>
 
     </div>
