@@ -36,7 +36,7 @@ namespace ExpenseTracker.API.Controllers
                 query = query.Where(t => t.Date >= dateFrom.Value);
 
             if (dateTo.HasValue)
-                query = query.Where(t => t.Date >= dateTo.Value);
+                query = query.Where(t => t.Date <= dateTo.Value);
 
             var filtered = await query.ToListAsync();
 
