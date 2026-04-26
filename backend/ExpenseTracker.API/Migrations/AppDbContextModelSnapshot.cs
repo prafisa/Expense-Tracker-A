@@ -45,7 +45,7 @@ namespace ExpenseTracker.API.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Budgets");
+                    b.ToTable("Budgets", (string)null);
                 });
 
             modelBuilder.Entity("ExpenseTracker.API.Models.Category", b =>
@@ -79,7 +79,7 @@ namespace ExpenseTracker.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
 
                     b.HasData(
                         new
@@ -194,7 +194,7 @@ namespace ExpenseTracker.API.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Expenses");
+                    b.ToTable("Expenses", (string)null);
                 });
 
             modelBuilder.Entity("ExpenseTracker.API.Models.Income", b =>
@@ -225,7 +225,7 @@ namespace ExpenseTracker.API.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Incomes");
+                    b.ToTable("Incomes", (string)null);
                 });
 
             modelBuilder.Entity("ExpenseTracker.API.Models.Transaction", b =>
@@ -266,7 +266,7 @@ namespace ExpenseTracker.API.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("ExpenseTracker.API.Models.Budget", b =>
