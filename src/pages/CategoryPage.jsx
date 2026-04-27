@@ -76,17 +76,28 @@ useEffect(() => {
     }
   };
 
-  const handleUpdateCategory = async (formData) => {
-    try {
-      console.log('Updating category:', editingCategory?.id, formData);
-      await categoryService.updateCategory(editingCategory.id, formData);
-      await loadCategories();
-      closeModal();
-    } catch (err) {
-      console.error('Update error:', err);
-      setError(err.message);
-    }
-  };
+ // In CategoryPage.jsx, update the handleUpdateCategory function
+const handleUpdateCategory = async (formData) => {
+  try {
+    console.log('Updating category:', editingCategory?.id, formData);
+    
+    // Only send the fields that are being updated
+    const updateData = {
+      name: formData.name,
+      type: formData.type === 'INCOME' ? 0 : 1, // Convert to number for backend
+      description: formData.description,
+      icon: formData.icon,
+      color: formData.color
+    };
+    
+    await categoryService.updateCategory(editingCategory.id, updateData);
+    await loadCategories();
+    closeModal();
+  } catch (err) {
+    console.error('Update error:', err);
+    setError(err.message);
+  }
+};
 
   const handleDeleteCategory = async (id) => {
     if (!window.confirm('Are you sure you want to delete this category?')) return;
