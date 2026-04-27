@@ -1,19 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const categories = [
-  { id: 1, name: 'Food & Dining' },
-  { id: 2, name: 'Transportation' },
-  { id: 3, name: 'Entertainment' },
-  { id: 4, name: 'Shopping' },
-  { id: 5, name: 'Utilities' },
-  { id: 6, name: 'Healthcare' },
-  { id: 7, name: 'Education' },
-  { id: 8, name: 'Rent/Mortgage' },
-  { id: 9, name: 'Insurance' },
-  { id: 10, name: 'Savings' },
-];
-
-const BudgetForm = ({ onSubmit, initialData, selectedMonth, onCancel }) => {
+const BudgetForm = ({ onSubmit, initialData, selectedMonth, onCancel, categories }) => {
   const [formData, setFormData] = useState({
     allocated: '',
     month: selectedMonth,
@@ -72,6 +59,10 @@ const BudgetForm = ({ onSubmit, initialData, selectedMonth, onCancel }) => {
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
+  // Group categories by type
+  const incomeCategories = categories.filter(c => c.type === 0 || c.type === '0' || c.type === 'INCOME');
+  const expenseCategories = categories.filter(c => c.type === 1 || c.type === '1' || c.type === 'EXPENSE');
+
   return (
     <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-lg p-6">
       <h3 className="text-base font-medium text-slate-900 mb-5">
@@ -92,11 +83,24 @@ const BudgetForm = ({ onSubmit, initialData, selectedMonth, onCancel }) => {
             }`}
           >
             <option value="">Select a category</option>
-            {categories.map(category => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
+            {expenseCategories.length > 0 && (
+              <optgroup label="Expense Categories">
+                {expenseCategories.map(category => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </optgroup>
+            )}
+            {incomeCategories.length > 0 && (
+              <optgroup label="Income Categories">
+                {incomeCategories.map(category => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </optgroup>
+            )}
           </select>
           {errors.categoryId && (
             <p className="mt-1 text-xs text-rose-600">{errors.categoryId}</p>
