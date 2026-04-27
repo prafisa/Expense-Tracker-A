@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { X, TrendingUp, TrendingDown } from 'lucide-react'
-// import { categories } from '../../data/mockData'
 import ModalField from './ModalField'
 import CategoryPicker from './CategoryPicker'
 
@@ -17,8 +16,6 @@ function makeEmpty(lockedType) {
   }
 }
 
-// ── input style helper ────────────────────────────────────────────────────────
-
 function inputClass(hasError) {
   return [
     'w-full px-3 py-2.5 rounded-xl border text-sm text-zinc-800',
@@ -29,27 +26,26 @@ function inputClass(hasError) {
   ].join(' ')
 }
 
-// ── main component ────────────────────────────────────────────────────────────
-
-export default function ItemModal({ open, onClose, onSave, editData, lockedType = null, categories= [] }) {
+export default function ItemModal({ open, onClose, onSave, editData, lockedType = null, categories = [] }) {
   const [form, setForm]     = useState(makeEmpty(lockedType))
   const [errors, setErrors] = useState({})
 
-  // ── sync form when modal opens ──────────────────────────────────────────────
   useEffect(() => {
     if (!open) return
-    if (editData) {
-      setForm({ ...editData, amount: String(editData.amount) })
-    } else {
-      setForm(makeEmpty(lockedType))
-    }
+    if (editData) setForm({ ...editData, amount: String(editData.amount) })
+    else setForm(makeEmpty(lockedType))
     setErrors({})
   }, [open, editData])
 
-  // ── derived ─────────────────────────────────────────────────────────────────
-const filteredCats = categories.filter(c => 
-  c.type.toLowerCase() === form.type.toLowerCase()
-)
+ const filteredCats = categories.filter(c => {
+  if (c.type === undefined || c.type === null) return false
+  const catType = typeof c.type === 'number'
+    ? (c.type === 0 ? 'income' : 'expense')
+    : c.type.toLowerCase()
+  const formType = (form.type ?? lockedType ?? 'expense').toLowerCase()
+  return catType === formType
+})
+
   const isEdit       = !!editData
   const isIncome     = form.type === 'income'
 
@@ -69,60 +65,39 @@ const filteredCats = categories.filter(c =>
     ? 'bg-emerald-500 hover:bg-emerald-600'
     : 'bg-violet-600 hover:bg-violet-700'
 
-  // ── field setter ─────────────────────────────────────────────────────────────
   function setField(field, value) {
     setForm(prev => {
       const next = { ...prev, [field]: value }
-      // reset category when type changes
       if (field === 'type') next.categoryId = ''
       return next
     })
-    // clear that field's error
     setErrors(prev => ({ ...prev, [field]: null }))
   }
 
-  // ── validation ───────────────────────────────────────────────────────────────
   function validate() {
     const e = {}
-    if (!form.title.trim())           e.title      = 'Title is required'
-    if (!form.amount || +form.amount <= 0) e.amount = 'Enter a valid amount'
-    if (!form.categoryId)             e.categoryId = 'Pick a category'
-    if (!form.date)                   e.date       = 'Date is required'
+    if (!form.title.trim())                e.title      = 'Title is required'
+    if (!form.amount || +form.amount <= 0) e.amount     = 'Enter a valid amount'
+    if (!form.categoryId)                  e.categoryId = 'Pick a category'
+    if (!form.date)                        e.date       = 'Date is required'
     return e
   }
 
-  // ── submit ───────────────────────────────────────────────────────────────────
   function handleSubmit() {
     const e = validate()
-    if (Object.keys(e).length) {
-      setErrors(e)
-      return
-    }
-    onSave({
-      ...form,
-      amount:     +form.amount,
-      categoryId: +form.categoryId,
-    })
+    if (Object.keys(e).length) { setErrors(e); return }
+    onSave({ ...form, amount: +form.amount, categoryId: +form.categoryId })
     onClose()
   }
 
-  // ── don't render if closed ───────────────────────────────────────────────────
   if (!open) return null
 
-  // ── render ───────────────────────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
 
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-        onClick={onClose}
-      />
-
-      {/* Modal box */}
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md z-10 flex flex-col max-h-[90vh]">
 
-        {/* ── Header ── */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 shrink-0">
           <h2 className="text-base font-semibold text-zinc-800">{modalTitle}</h2>
           <button
@@ -133,10 +108,8 @@ const filteredCats = categories.filter(c =>
           </button>
         </div>
 
-        {/* ── Scrollable body ── */}
         <div className="px-6 py-5 space-y-4 overflow-y-auto flex-1">
 
-          {/* Type toggle — only when not locked */}
           {!lockedType && (
             <div className="flex rounded-xl bg-zinc-100 p-1 gap-1">
               {['expense', 'income'].map(t => (
@@ -152,17 +125,13 @@ const filteredCats = categories.filter(c =>
                       : 'text-zinc-400 hover:text-zinc-600'
                     }`}
                 >
-                  {t === 'income'
-                    ? <TrendingUp size={14} />
-                    : <TrendingDown size={14} />
-                  }
+                  {t === 'income' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
                   {t.charAt(0).toUpperCase() + t.slice(1)}
                 </button>
               ))}
             </div>
           )}
 
-          {/* Title */}
           <ModalField label={lockedType === 'income' ? 'Source' : 'Title'} error={errors.title}>
             <input
               type="text"
@@ -173,7 +142,6 @@ const filteredCats = categories.filter(c =>
             />
           </ModalField>
 
-          {/* Amount */}
           <ModalField label="Amount (Rs.)" error={errors.amount}>
             <input
               type="number"
@@ -185,15 +153,21 @@ const filteredCats = categories.filter(c =>
             />
           </ModalField>
 
-          {/* Category picker */}
-          <CategoryPicker
-            categories={filteredCats}
-            selected={form.categoryId}
-            onChange={val => setField('categoryId', val)}
-            error={errors.categoryId}
-          />
+          <ModalField label="Category" error={errors.categoryId}>
+  <select
+    value={form.categoryId}
+    onChange={e => setField('categoryId', +e.target.value)}
+    className={inputClass(errors.categoryId)}
+  >
+    <option value="">Select category...</option>
+    {filteredCats.map(cat => (
+      <option key={cat.id} value={cat.id}>
+        {cat.name}
+      </option>
+    ))}
+  </select>
+</ModalField>
 
-          {/* Date + Note */}
           <div className="grid grid-cols-2 gap-3">
             <ModalField label="Date" error={errors.date}>
               <input
@@ -216,7 +190,6 @@ const filteredCats = categories.filter(c =>
 
         </div>
 
-        {/* ── Footer ── */}
         <div className="px-6 py-4 border-t border-zinc-100 flex gap-3 shrink-0">
           <button
             onClick={onClose}

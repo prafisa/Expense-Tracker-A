@@ -11,5 +11,9 @@ namespace ExpenseTracker.API.DTOs.Expense
         public DateTime Date { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; } = string.Empty;
+
+        //remove if not work
+         public string? CategoryIcon { get; set; }   // ← add
+    public string? CategoryColor { get; set; }
     }
 }
