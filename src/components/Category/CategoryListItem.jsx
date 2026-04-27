@@ -3,10 +3,22 @@ import Icon from '../Icon';
 
 const CategoryListItem = ({ category, onEdit, onDelete }) => {
   const categoryName = category.name || 'Unnamed';
-  const categoryType = category.type === 0 ? 'INCOME' : 'EXPENSE';
+  
+  // Determine the type correctly for display
+  let displayType = 'EXPENSE';
+  const originalType = category.type;
+  
+  if (typeof originalType === 'number') {
+    displayType = originalType === 0 ? 'INCOME' : 'EXPENSE';
+  } else if (typeof originalType === 'string') {
+    displayType = originalType.toUpperCase();
+  }
+  
   const categoryIcon = category.icon || 'Tag';
   const categoryColor = category.color || '#64748b';
   const categoryDescription = category.description || '';
+  
+  console.log(`Category: ${categoryName}, Original Type: ${originalType}, Display Type: ${displayType}`);
   
   return (
     <div className="bg-white rounded-lg border border-zinc-200 p-4 hover:border-zinc-300 transition-colors">
@@ -22,11 +34,11 @@ const CategoryListItem = ({ category, onEdit, onDelete }) => {
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-medium text-zinc-800">{categoryName}</h3>
               <span className={`text-xs px-2 py-0.5 rounded-full ${
-                categoryType === 'INCOME' 
+                displayType === 'INCOME' 
                   ? 'bg-emerald-50 text-emerald-600' 
                   : 'bg-rose-50 text-rose-600'
               }`}>
-                {categoryType}
+                {displayType}
               </span>
             </div>
             {categoryDescription && (

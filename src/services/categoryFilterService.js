@@ -6,24 +6,23 @@ export const categoryFilterService = {
     }
     
     return categories.filter(category => {
-      // Search filter - check name (case insensitive)
+      // Search filter
       const matchesSearch = !searchTerm || 
         (category.name && category.name.toLowerCase().includes(searchTerm.toLowerCase()));
       if (!matchesSearch) return false;
       
-      // Type filter - handle both string and numeric types
+      // Type filter
       if (filterType !== 'all') {
         let categoryType = category.type;
         
-        // Convert number to string if needed
+        // Handle different type formats
         if (typeof categoryType === 'number') {
           categoryType = categoryType === 0 ? 'INCOME' : 'EXPENSE';
+        } else if (typeof categoryType === 'string') {
+          categoryType = categoryType.toUpperCase();
         }
         
-        // Convert to uppercase for comparison
-        categoryType = String(categoryType).toUpperCase();
         const selectedType = filterType.toUpperCase();
-        
         if (categoryType !== selectedType) return false;
       }
       
@@ -42,16 +41,14 @@ export const categoryFilterService = {
     
     categories.forEach(category => {
       let categoryType = category.type;
-      if (typeof categoryType === 'number') {
-        categoryType = categoryType === 0 ? 'INCOME' : 'EXPENSE';
-      } else {
-        categoryType = String(categoryType).toUpperCase();
-      }
       
-      if (categoryType === 'INCOME') {
-        incomeCount++;
-      } else if (categoryType === 'EXPENSE') {
-        expenseCount++;
+      if (typeof categoryType === 'number') {
+        if (categoryType === 0) incomeCount++;
+        else if (categoryType === 1) expenseCount++;
+      } else if (typeof categoryType === 'string') {
+        const typeUpper = categoryType.toUpperCase();
+        if (typeUpper === 'INCOME') incomeCount++;
+        else if (typeUpper === 'EXPENSE') expenseCount++;
       }
     });
     
@@ -73,16 +70,21 @@ export const categoryFilterService = {
     
     categories.forEach(category => {
       let categoryType = category.type;
-      if (typeof categoryType === 'number') {
-        categoryType = categoryType === 0 ? 'INCOME' : 'EXPENSE';
-      } else {
-        categoryType = String(categoryType).toUpperCase();
-      }
       
-      if (categoryType === 'INCOME') {
-        income.push(category);
-      } else if (categoryType === 'EXPENSE') {
-        expense.push(category);
+      // Handle different type formats correctly
+      if (typeof categoryType === 'number') {
+        if (categoryType === 0) {
+          income.push(category);
+        } else if (categoryType === 1) {
+          expense.push(category);
+        }
+      } else if (typeof categoryType === 'string') {
+        const typeUpper = categoryType.toUpperCase();
+        if (typeUpper === 'INCOME') {
+          income.push(category);
+        } else if (typeUpper === 'EXPENSE') {
+          expense.push(category);
+        }
       }
     });
     

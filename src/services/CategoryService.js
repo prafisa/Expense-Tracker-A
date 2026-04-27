@@ -40,32 +40,31 @@ export const categoryService = {
     return JSON.parse(responseText);
   },
 
-  updateCategory: async (id, categoryData) => {
-    const submitData = {
-      name: categoryData.name,
-      type: categoryData.type === 'INCOME' ? 0 : 1,
-      description: categoryData.description || '',
-      icon: categoryData.icon,
-      color: categoryData.color
-    };
-    
-    console.log('🔄 UPDATE CATEGORY:', id, submitData);
-    
-    const response = await fetch(`${API_BASE}/Category/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(submitData)
-    });
-    
-    const responseText = await response.text();
-    console.log('Response:', response.status, responseText);
-    
-    if (!response.ok) {
-      throw new Error(responseText || 'Failed to update category');
-    }
-    
-    return JSON.parse(responseText);
-  },
+updateCategory: async (id, categoryData) => {
+  // Ensure type is a number (0 for INCOME, 1 for EXPENSE)
+  const submitData = {
+    name: categoryData.name,
+    type: categoryData.type === 'INCOME' ? 0 : 1,
+    description: categoryData.description || '',
+    icon: categoryData.icon,
+    color: categoryData.color
+  };
+  
+  console.log('Sending update data:', submitData);
+  
+  const response = await fetch(`${API_BASE}/Category/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(submitData)
+  });
+  
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.error('Update error response:', errorText);
+    throw new Error(errorText || 'Failed to update category');
+  }
+  return response.json();
+},
 
   deleteCategory: async (id) => {
     try {
