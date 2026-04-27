@@ -11,10 +11,9 @@ const BudgetTableRow = ({ budget, onEdit, onDelete }) => {
     }).format(amount).replace('NPR', 'Rs.');
   };
 
-  // Mock spent amount - in real app, this would come from transactions
-  const spentAmount = budget.spent || Math.random() * budget.allocated;
-  const remainingAmount = budget.allocated - spentAmount;
-  const percentageUsed = (spentAmount / budget.allocated) * 100;
+  const spentAmount = budget.spent || 0;
+  const remainingAmount = budget.remaining !== undefined ? budget.remaining : budget.allocated - spentAmount;
+  const percentageUsed = budget.percentageUsed !== undefined ? budget.percentageUsed : (spentAmount / budget.allocated) * 100;
 
   const getStatusColor = () => {
     if (percentageUsed >= 100) return 'text-rose-600 bg-rose-50';

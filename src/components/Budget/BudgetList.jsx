@@ -1,12 +1,53 @@
-import React from 'react';
-import BudgetTableRow from './BudgetTableRow.jsx';
+import React, { useState, useEffect } from 'react';
+import BudgetTableRow from './BudgetTableRow';
+import { budgetService } from '../../services/budgetService';
 
 const BudgetList = ({ budgets, onEdit, onDelete, onShowForm, loading }) => {
+  const [budgetsWithSpent, setBudgetsWithSpent] = useState([]);
+  const [loadingSpent, setLoadingSpent] = useState(false);
+
+  // Recalculate spent amounts whenever budgets change
+  useEffect(() => {
+    if (budgets && budgets.length > 0) {
+      loadSpentAmounts();
+    } else {
+      setBudgetsWithSpent([]);
+    }
+  }, [budgets]); // Only depends on budgets
+
+  const loadSpentAmounts = async () => {
+    setLoadingSpent(true);
+    try {
+      console.log('Loading spent amounts for budgets...');
+      
+      const budgetsWithSpentData = await Promise.all(
+        budgets.map(async (budget) => {
+          const spent = await budgetService.calculateSpentAmount(budget.categoryId, budget.month);
+          console.log(`Budget: ${budget.categoryName}, Month: ${budget.month}, Spent: ${spent}`);
+          
+          return {
+            ...budget,
+            spent: spent,
+            remaining: budget.allocated - spent,
+            percentageUsed: (spent / budget.allocated) * 100
+          };
+        })
+      );
+      
+      setBudgetsWithSpent(budgetsWithSpentData);
+    } catch (error) {
+      console.error('Error loading spent amounts:', error);
+      setBudgetsWithSpent(budgets);
+    } finally {
+      setLoadingSpent(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-12 text-center">
         <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600"></div>
-        <p className="mt-3 text-sm text-slate-500">Loading...</p>
+        <p className="mt-3 text-sm text-slate-500">Loading budgets...</p>
       </div>
     );
   }
@@ -29,12 +70,6 @@ const BudgetList = ({ budgets, onEdit, onDelete, onShowForm, loading }) => {
     );
   }
 
-  // Sort budgets by month descending and then by category
-  const sortedBudgets = [...budgets].sort((a, b) => {
-    if (a.month !== b.month) return b.month.localeCompare(a.month);
-    return a.categoryName.localeCompare(b.categoryName);
-  });
-
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-slate-200">
@@ -47,10 +82,10 @@ const BudgetList = ({ budgets, onEdit, onDelete, onShowForm, loading }) => {
               Month
             </th>
             <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Allocated Amount
+              Budgeted
             </th>
             <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
-              Spent Amount
+              Spent
             </th>
             <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
               Remaining
@@ -64,14 +99,23 @@ const BudgetList = ({ budgets, onEdit, onDelete, onShowForm, loading }) => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-slate-200">
-          {sortedBudgets.map((budget) => (
-            <BudgetTableRow
-              key={budget.id}
-              budget={budget}
-              onEdit={() => onEdit(budget)}
-              onDelete={() => onDelete(budget.id)}
-            />
-          ))}
+          {loadingSpent ? (
+            <tr>
+              <td colSpan="7" className="px-6 py-8 text-center">
+                <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-violet-600"></div>
+                <p className="mt-2 text-sm text-slate-500">Calculating spent amounts...</p>
+              </td>
+            </tr>
+          ) : (
+            budgetsWithSpent.map((budget) => (
+              <BudgetTableRow
+                key={budget.id}
+                budget={budget}
+                onEdit={() => onEdit(budget)}
+                onDelete={() => onDelete(budget.id)}
+              />
+            ))
+          )}
         </tbody>
       </table>
     </div>
