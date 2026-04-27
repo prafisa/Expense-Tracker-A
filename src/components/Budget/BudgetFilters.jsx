@@ -3,14 +3,24 @@ import React from 'react';
 const BudgetFilters = ({ 
   selectedYear, 
   selectedMonth, 
+  selectedCategory,
   availableYears, 
   months, 
+  categories,
   onYearChange, 
-  onMonthChange, 
+  onMonthChange,
+  onCategoryChange,
   onClearFilters, 
   onAddBudget 
 }) => {
-  const hasFilters = selectedYear || selectedMonth;
+  const hasFilters = selectedYear || selectedMonth || selectedCategory;
+
+  // Convert category type to readable format
+  const getCategoryTypeLabel = (type) => {
+    if (type === 0 || type === '0' || type === 'INCOME') return 'Income';
+    if (type === 1 || type === '1' || type === 'EXPENSE') return 'Expense';
+    return '';
+  };
 
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-5 mb-6">
@@ -43,6 +53,24 @@ const BudgetFilters = ({
             <option value="">All Months</option>
             {months.map(month => (
               <option key={month.value} value={month.value}>{month.name}</option>
+            ))}
+          </select>
+        </div>
+        
+        <div className="flex-1 min-w-[180px]">
+          <label className="block text-xs font-medium text-slate-600 uppercase tracking-wide mb-2">
+            Category
+          </label>
+          <select
+            value={selectedCategory}
+            onChange={(e) => onCategoryChange(e.target.value)}
+            className="w-full px-3 py-2 border border-slate-200 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-violet-500"
+          >
+            <option value="">All Categories</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.id}>
+                {category.name} ({getCategoryTypeLabel(category.type)})
+              </option>
             ))}
           </select>
         </div>

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import BudgetForm from './BudgetForm';
 
-const BudgetModal = ({ isOpen, onClose, onSubmit, initialData, selectedMonth, title }) => {
-  // Close modal on escape key press
+const BudgetModal = ({ isOpen, onClose, onSubmit, initialData, selectedMonth, title, categories }) => {
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === 'Escape') onClose();
@@ -19,7 +18,6 @@ const BudgetModal = ({ isOpen, onClose, onSubmit, initialData, selectedMonth, ti
 
   if (!isOpen) return null;
 
-  // Handle click outside to close
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -32,9 +30,7 @@ const BudgetModal = ({ isOpen, onClose, onSubmit, initialData, selectedMonth, ti
       onClick={handleBackdropClick}
     >
       <div className="relative w-full max-w-md mx-4 animate-in fade-in zoom-in duration-200">
-        {/* Modal Content */}
         <div className="bg-white rounded-lg shadow-xl">
-          {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-200">
             <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
             <button
@@ -47,7 +43,6 @@ const BudgetModal = ({ isOpen, onClose, onSubmit, initialData, selectedMonth, ti
             </button>
           </div>
 
-          {/* Form */}
           <BudgetForm
             onSubmit={async (data) => {
               await onSubmit(data);
@@ -56,6 +51,7 @@ const BudgetModal = ({ isOpen, onClose, onSubmit, initialData, selectedMonth, ti
             initialData={initialData}
             selectedMonth={selectedMonth}
             onCancel={onClose}
+            categories={categories}
           />
         </div>
       </div>
