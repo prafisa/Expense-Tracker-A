@@ -26,7 +26,7 @@ namespace ExpenseTracker.API.Controllers
             int? categoryId,
             string? search)
         {
-            // 1. Load income + expense separately
+            // 1. Load expenses + incomes with category
             var expenses = await _context.Expenses
                 .Include(e => e.Category)
                 .ToListAsync();
@@ -35,7 +35,7 @@ namespace ExpenseTracker.API.Controllers
                 .Include(i => i.Category)
                 .ToListAsync();
 
-            // 2. Convert to common DTO
+            // 2. Map to TransactionResponse DTO
             var expenseTransactions = expenses.Select(e => new TransactionResponse
             {
                 Id = e.Id,
@@ -46,7 +46,9 @@ namespace ExpenseTracker.API.Controllers
                 Amount = e.Amount,
                 Date = e.Date,
                 CategoryId = e.CategoryId,
-                CategoryName = e.Category.Name
+                CategoryName = e.Category.Name,
+                CategoryIcon = e.Category.Icon,
+                CategoryColor = e.Category.Color
             });
 
             var incomeTransactions = incomes.Select(i => new TransactionResponse
@@ -59,10 +61,12 @@ namespace ExpenseTracker.API.Controllers
                 Amount = i.Amount,
                 Date = i.Date,
                 CategoryId = i.CategoryId,
-                CategoryName = i.Category.Name
+                CategoryName = i.Category.Name,
+                CategoryIcon = i.Category.Icon,
+                CategoryColor = i.Category.Color
             });
 
-            // 3. Merge both lists
+            // 3. Merge
             var transactions = expenseTransactions
                 .Concat(incomeTransactions)
                 .AsQueryable();
@@ -81,14 +85,14 @@ namespace ExpenseTracker.API.Controllers
                 transactions = transactions.Where(t => t.CategoryId == categoryId.Value);
 
             if (!string.IsNullOrEmpty(search))
-                transactions = transactions.Where(t => t.Name.Contains(search));
+                transactions = transactions.Where(t => t.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
 
-            // 5. Final list
+            // 5. Sort
             var result = transactions
                 .OrderByDescending(t => t.Date)
                 .ToList();
 
-            // 6. Summary (IMPORTANT FIX: use result)
+            // 6. Summary
             var totalIncome = result
                 .Where(t => t.Type == TransactionType.INCOME)
                 .Sum(t => t.Amount);
@@ -99,7 +103,7 @@ namespace ExpenseTracker.API.Controllers
 
             return Ok(new
             {
-                transactions = result,   // 👈 IMPORTANT (frontend must use this)
+                transactions = result,
                 totalIncome,
                 totalExpense,
                 balance = totalIncome - totalExpense,
