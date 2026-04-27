@@ -1,4 +1,3 @@
-// src/pages/CategoryPage.jsx
 import React, { useState, useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 import CategoryStats from '../components/Category/CategoryStats';
@@ -24,20 +23,24 @@ const CategoryPage = () => {
     loadCategories();
   }, []);
 
-  useEffect(() => {
-    if (categories && categories.length > 0) {
-      try {
-        const filtered = categoryFilterService.filterCategories(categories, searchTerm, filterType);
-        const separated = categoryFilterService.separateByType(filtered);
-        setFilteredCategories(separated);
-        
-        const newStats = categoryFilterService.calculateStats(categories);
-        setStats(newStats);
-      } catch (err) {
-        console.error('Error filtering categories:', err);
-      }
-    }
-  }, [categories, searchTerm, filterType]);
+  // In the useEffect that sets filteredCategories, add:
+useEffect(() => {
+  if (categories && categories.length > 0) {
+    console.log('=== PROCESSING CATEGORIES ===');
+    console.log('All categories:', categories);
+    
+    const filtered = categoryFilterService.filterCategories(categories, searchTerm, filterType);
+    console.log('After filter:', filtered);
+    
+    const separated = categoryFilterService.separateByType(filtered);
+    console.log('After separation:', separated);
+    
+    setFilteredCategories(separated);
+    
+    const newStats = categoryFilterService.calculateStats(categories);
+    setStats(newStats);
+  }
+}, [categories, searchTerm, filterType]);
 
   const loadCategories = async () => {
     setLoading(true);
@@ -46,18 +49,6 @@ const CategoryPage = () => {
       const data = await categoryService.getAllCategories();
       console.log('Loaded categories:', data);
       console.log('Number of categories:', data?.length);
-      
-      // Log first category details
-      if (data && data.length > 0) {
-        console.log('Sample category:', {
-          id: data[0].id,
-          name: data[0].name,
-          type: data[0].type,
-          typeValue: data[0].type,
-          icon: data[0].icon,
-          color: data[0].color
-        });
-      }
       
       if (data && Array.isArray(data)) {
         setCategories(data);
@@ -84,73 +75,29 @@ const CategoryPage = () => {
       setError(err.message);
     }
   };
-const handleUpdateCategory = async (formData) => {
-  try {
-    console.log('=== HANDLE UPDATE CATEGORY ===');
-    console.log('Editing category ID:', editingCategory?.id);
-    console.log('Form data received:', formData);
-    
-    // Make sure we have all required fields
-    if (!formData.name) {
-      throw new Error('Category name is required');
+
+  const handleUpdateCategory = async (formData) => {
+    try {
+      console.log('Updating category:', editingCategory?.id, formData);
+      await categoryService.updateCategory(editingCategory.id, formData);
+      await loadCategories();
+      closeModal();
+    } catch (err) {
+      console.error('Update error:', err);
+      setError(err.message);
     }
-    
-    // Call the update service
-    await categoryService.updateCategory(editingCategory.id, formData);
-    
-    // Reload categories to see the changes
-    await loadCategories();
-    
-    // Close the modal
-    closeModal();
-    
-    // Show success message (optional)
-    setError(null);
-  } catch (err) {
-    console.error('Update error:', err);
-    setError(err.message || 'Failed to update category');
-  }
-};
-// Add this to CategoryPage.jsx temporarily for testing
-const testUpdateAPI = async () => {
-  const testData = {
-    name: "Test Category",
-    type: 1, // 0 for INCOME, 1 for EXPENSE
-    description: "Test description",
-    icon: "Tag",
-    color: "#64748b"
   };
-  
-  console.log('Testing API with:', testData);
-  
-  const response = await fetch('https://localhost:7204/api/Category/1', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(testData)
-  });
-  
-  const result = await response.text();
-  console.log('Test API result:', response.status, result);
-};
 
-// Call this from a button or useEffect to test
-
-const handleDeleteCategory = async (id) => {
-  if (!window.confirm('Are you sure you want to delete this category? This action cannot be undone.')) return;
-  
-  try {
-    await categoryService.deleteCategory(id);
-    await loadCategories();
-    setError(null);
-  } catch (err) {
-    console.error('Delete error:', err);
-    if (err.message.includes('in use') || err.message.includes('transactions')) {
-      setError('Cannot delete category that is currently in use. Please remove all transactions linked to this category first.');
-    } else {
-      setError(err.message || 'Failed to delete category');
+  const handleDeleteCategory = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this category?')) return;
+    try {
+      await categoryService.deleteCategory(id);
+      await loadCategories();
+    } catch (err) {
+      console.error('Delete error:', err);
+      setError(err.message);
     }
-  }
-};
+  };
 
   const openCreateModal = () => {
     setEditingCategory(null);
@@ -176,7 +123,7 @@ const handleDeleteCategory = async (id) => {
   };
 
   return (
-    <div className=" mx-auto px-1 py-1">
+    <div className="max-w-7xl mx-auto px-4 py-6">
       <CategoryStats stats={stats} />
       
       <CategoryFilters
