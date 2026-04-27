@@ -1,3 +1,4 @@
+// src/components/Budget/BudgetManager.jsx
 import React, { useState, useEffect } from 'react';
 import BudgetList from '../components/Budget/BudgetList';
 import BudgetModal from '../components/Budget/BudgetModal';
