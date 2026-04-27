@@ -3,6 +3,8 @@ import { Search } from 'lucide-react';
 import CategoryListItem from './CategoryListItem';
 
 const CategoryList = ({ expenseCategories, incomeCategories, onEdit, onDelete }) => {
+  console.log('CategoryList received - Expense:', expenseCategories?.length, 'Income:', incomeCategories?.length);
+  
   // Ensure we're working with arrays
   const expenses = Array.isArray(expenseCategories) ? expenseCategories : [];
   const incomes = Array.isArray(incomeCategories) ? incomeCategories : [];
