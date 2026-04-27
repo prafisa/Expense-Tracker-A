@@ -1,4 +1,4 @@
-function ExpenseCard({ expense, onEdit, onDelete }) {   
+function ExpenseCard({ expense, onDelete }) {   
   return (
     <tr className="border-b border-slate-100 last:border-b-0">
 
@@ -31,12 +31,7 @@ function ExpenseCard({ expense, onEdit, onDelete }) {
 
       <td className="py-4">
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => onEdit(expense)}
-            className="text-slate-500 text-sm border border-slate-200 px-3 py-1 rounded-lg hover:bg-slate-50 transition-colors"
-          >
-            Edit
-          </button>
+          
           <button
             onClick={() => onDelete(expense.id)}
             className="text-rose-400 text-sm border border-rose-200 px-3 py-1 rounded-lg hover:bg-rose-50 transition-colors"

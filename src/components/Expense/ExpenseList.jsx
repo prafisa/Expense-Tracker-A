@@ -1,6 +1,6 @@
 import ExpenseCard from './ExpenseCard'
 
-function ExpenseList({ expenses, onEdit, onDelete }) {   
+function ExpenseList({ expenses, onDelete }) {   
   return (
     <div className="flex flex-col gap-4">
 
@@ -48,8 +48,7 @@ function ExpenseList({ expenses, onEdit, onDelete }) {
             {expenses.map((expense) => (
               <ExpenseCard
                 key={expense.id}
-                expense={expense}
-                onEdit={onEdit}           
+                expense={expense}         
                 onDelete={onDelete}       
               />
             ))}
