@@ -1,52 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Check } from 'lucide-react';
-import { incomeIcons, expenseIcons, getCategoryNameFromIcon } from '../../utils/iconMapper';
-
-// Predefined category combinations (name + icon)
-const incomeCategories = [
-  { name: 'Salary', icon: 'Briefcase' },
-  { name: 'Freelance', icon: 'Sparkles' },
-  { name: 'Investment', icon: 'TrendingUp' },
-  { name: 'Gift', icon: 'Gift' },
-  { name: 'Savings', icon: 'PiggyBank' },
-  { name: 'Scholarship', icon: 'GraduationCap' },
-  { name: 'Bonus', icon: 'Gift' },
-  { name: 'Other Income', icon: 'Tag' }
-];
-
-const expenseCategories = [
-  { name: 'Food & Dining', icon: 'Utensils' },
-  { name: 'Groceries', icon: 'ShoppingCart' },
-  { name: 'Shopping', icon: 'ShoppingBag' },
-  { name: 'Transport', icon: 'Car' },
-  { name: 'Public Transport', icon: 'Bus' },
-  { name: 'Travel', icon: 'Plane' },
-  { name: 'Entertainment', icon: 'Film' },
-  { name: 'Gaming', icon: 'Gamepad2' },
-  { name: 'Streaming', icon: 'Tv' },
-  { name: 'Music', icon: 'Music' },
-  { name: 'Health', icon: 'Heart' },
-  { name: 'Medical', icon: 'Stethoscope' },
-  { name: 'Fitness', icon: 'Dumbbell' },
-  { name: 'Housing', icon: 'Home' },
-  { name: 'Rent', icon: 'Home' },
-  { name: 'Utilities', icon: 'Zap' },
-  { name: 'Electricity', icon: 'Zap' },
-  { name: 'Water', icon: 'Droplet' },
-  { name: 'Internet', icon: 'Wifi' },
-  { name: 'Phone', icon: 'Phone' },
-  { name: 'Clothing', icon: 'Shirt' },
-  { name: 'Education', icon: 'Book' },
-  { name: 'Books', icon: 'Book' },
-  { name: 'Coffee', icon: 'Coffee' },
-  { name: 'Dining', icon: 'Utensils' },
-  { name: 'Bars', icon: 'Beer' },
-  { name: 'Celebrations', icon: 'Cake' },
-  { name: 'Pets', icon: 'Dog' },
-  { name: 'Hobbies', icon: 'Paintbrush' },
-  { name: 'Salon', icon: 'Scissors' },
-  { name: 'Other Expense', icon: 'Tag' }
-];
+import { incomeIcons, expenseIcons } from '../../utils/iconMapper';
 
 const CategoryModal = ({ isOpen, onClose, onSubmit, initialData, title }) => {
   const [formData, setFormData] = useState({
@@ -59,11 +13,14 @@ const CategoryModal = ({ isOpen, onClose, onSubmit, initialData, title }) => {
 
   useEffect(() => {
     if (initialData) {
+      // Determine the type correctly
       let typeValue = 'EXPENSE';
-      if (initialData.type === 0 || initialData.type === '0') {
-        typeValue = 'INCOME';
-      } else if (initialData.type === 1 || initialData.type === '1') {
-        typeValue = 'EXPENSE';
+      const originalType = initialData.type;
+      
+      if (typeof originalType === 'number') {
+        typeValue = originalType === 0 ? 'INCOME' : 'EXPENSE';
+      } else if (typeof originalType === 'string') {
+        typeValue = originalType.toUpperCase();
       }
       
       setFormData({
@@ -89,6 +46,7 @@ const CategoryModal = ({ isOpen, onClose, onSubmit, initialData, title }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
+    // Only send fields that have changed
     const submitData = {
       name: formData.name,
       type: formData.type,
@@ -101,29 +59,14 @@ const CategoryModal = ({ isOpen, onClose, onSubmit, initialData, title }) => {
     onSubmit(submitData);
   };
 
-  const handleNameChange = (selectedName, selectedIcon) => {
-    setFormData(prev => ({
-      ...prev,
-      name: selectedName,
-      icon: selectedIcon
-    }));
-  };
-
-  const handleTypeChange = (type) => {
-    setFormData(prev => ({
-      ...prev,
-      type: type,
-      name: '',
-      icon: 'Tag'
-    }));
-  };
-
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const getAvailableCategories = () => {
-    return formData.type === 'INCOME' ? incomeCategories : expenseCategories;
+  const getCurrentIconPreview = () => {
+    const iconMap = [...incomeIcons, ...expenseIcons];
+    const currentIcon = iconMap.find(i => i.value === formData.icon);
+    return currentIcon ? currentIcon.label : '🏷️ Other';
   };
 
   return (
@@ -139,84 +82,54 @@ const CategoryModal = ({ isOpen, onClose, onSubmit, initialData, title }) => {
         <form onSubmit={handleSubmit} className="p-5">
           <div className="mb-4">
             <label className="block text-sm font-medium text-zinc-700 mb-1">
-              Category Type *
+              Category Name *
             </label>
-            <select
-              value={formData.type}
-              onChange={(e) => handleTypeChange(e.target.value)}
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => handleChange('name', e.target.value)}
               className="w-full px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-500"
-            >
-              <option value="EXPENSE">Expense</option>
-              <option value="INCOME">Income</option>
-            </select>
+              placeholder="Enter category name"
+              required
+            />
           </div>
           
           <div className="mb-4">
             <label className="block text-sm font-medium text-zinc-700 mb-1">
-              Category Name *
+              Category Icon *
             </label>
             <select
-              value={formData.name}
-              onChange={(e) => {
-                const selected = getAvailableCategories().find(cat => cat.name === e.target.value);
-                if (selected) {
-                  handleNameChange(selected.name, selected.icon);
-                }
-              }}
+              value={formData.icon}
+              onChange={(e) => handleChange('icon', e.target.value)}
               className="w-full px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-500"
               required
             >
-              <option value="">Select a category</option>
-              {getAvailableCategories().map(category => (
-                <option key={category.name} value={category.name}>
-                  {category.name}
-                </option>
-              ))}
+              <optgroup label="Income Icons">
+                {incomeIcons.map(icon => (
+                  <option key={icon.value} value={icon.value}>{icon.label}</option>
+                ))}
+              </optgroup>
+              <optgroup label="Expense Icons">
+                {expenseIcons.map(icon => (
+                  <option key={icon.value} value={icon.value}>{icon.label}</option>
+                ))}
+              </optgroup>
             </select>
+            <p className="text-xs text-zinc-400 mt-1">
+              Selected: {getCurrentIconPreview()}
+            </p>
           </div>
           
           <div className="mb-4">
-            <label className="block text-sm font-medium text-zinc-700 mb-1">
-              Icon (auto-selected from category)
-            </label>
-            <div className="w-full px-3 py-2 bg-zinc-50 border border-zinc-200 rounded-lg">
-              <div className="flex items-center gap-2">
-                <div 
-                  className="w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ backgroundColor: `${formData.color}15` }}
-                >
-                  <span role="img" aria-label="icon">
-                    {formData.icon === 'Briefcase' && '💼'}
-                    {formData.icon === 'Gift' && '🎁'}
-                    {formData.icon === 'TrendingUp' && '📈'}
-                    {formData.icon === 'PiggyBank' && '🐷'}
-                    {formData.icon === 'Sparkles' && '✨'}
-                    {formData.icon === 'GraduationCap' && '🎓'}
-                    {formData.icon === 'ShoppingBag' && '🛍️'}
-                    {formData.icon === 'ShoppingCart' && '🛒'}
-                    {formData.icon === 'Utensils' && '🍽️'}
-                    {formData.icon === 'Coffee' && '☕'}
-                    {formData.icon === 'Home' && '🏠'}
-                    {formData.icon === 'Car' && '🚗'}
-                    {formData.icon === 'Bus' && '🚌'}
-                    {formData.icon === 'Plane' && '✈️'}
-                    {formData.icon === 'Film' && '🎬'}
-                    {formData.icon === 'Gamepad2' && '🎮'}
-                    {formData.icon === 'Music' && '🎵'}
-                    {formData.icon === 'Heart' && '❤️'}
-                    {formData.icon === 'Dumbbell' && '💪'}
-                    {formData.icon === 'Book' && '📚'}
-                    {formData.icon === 'Shirt' && '👕'}
-                    {formData.icon === 'Phone' && '📱'}
-                    {formData.icon === 'Dog' && '🐕'}
-                    {formData.icon === 'Beer' && '🍺'}
-                    {formData.icon === 'Cake' && '🎂'}
-                    {formData.icon === 'Tag' && '🏷️'}
-                  </span>
-                </div>
-                <span className="text-sm text-zinc-600">{formData.icon}</span>
-              </div>
-            </div>
+            <label className="block text-sm font-medium text-zinc-700 mb-1">Type *</label>
+            <select
+              value={formData.type}
+              onChange={(e) => handleChange('type', e.target.value)}
+              className="w-full px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-violet-500"
+            >
+              <option value="INCOME">Income</option>
+              <option value="EXPENSE">Expense</option>
+            </select>
           </div>
           
           <div className="mb-4">
