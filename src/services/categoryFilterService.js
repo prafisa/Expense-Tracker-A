@@ -6,27 +6,25 @@ export const categoryFilterService = {
     }
     
     return categories.filter(category => {
-      // Search filter
+      // Search filter - check name (case insensitive)
       const matchesSearch = !searchTerm || 
         (category.name && category.name.toLowerCase().includes(searchTerm.toLowerCase()));
       if (!matchesSearch) return false;
       
-      // Type filter - handle numeric types
+      // Type filter - handle both string and numeric types
       if (filterType !== 'all') {
-        const categoryType = category.type; // 0 = INCOME, 1 = EXPENSE
-        const selectedType = filterType.toUpperCase();
+        let categoryType = category.type;
         
-        // Convert numeric type to string
-        let categoryTypeString = '';
-        if (categoryType === 0) {
-          categoryTypeString = 'INCOME';
-        } else if (categoryType === 1) {
-          categoryTypeString = 'EXPENSE';
-        } else {
-          categoryTypeString = String(categoryType).toUpperCase();
+        // Convert number to string if needed
+        if (typeof categoryType === 'number') {
+          categoryType = categoryType === 0 ? 'INCOME' : 'EXPENSE';
         }
         
-        if (categoryTypeString !== selectedType) return false;
+        // Convert to uppercase for comparison
+        categoryType = String(categoryType).toUpperCase();
+        const selectedType = filterType.toUpperCase();
+        
+        if (categoryType !== selectedType) return false;
       }
       
       return true;
@@ -39,8 +37,23 @@ export const categoryFilterService = {
       return { total: 0, incomeCount: 0, expenseCount: 0 };
     }
     
-    const incomeCount = categories.filter(c => c.type === 0).length;
-    const expenseCount = categories.filter(c => c.type === 1).length;
+    let incomeCount = 0;
+    let expenseCount = 0;
+    
+    categories.forEach(category => {
+      let categoryType = category.type;
+      if (typeof categoryType === 'number') {
+        categoryType = categoryType === 0 ? 'INCOME' : 'EXPENSE';
+      } else {
+        categoryType = String(categoryType).toUpperCase();
+      }
+      
+      if (categoryType === 'INCOME') {
+        incomeCount++;
+      } else if (categoryType === 'EXPENSE') {
+        expenseCount++;
+      }
+    });
     
     return {
       total: categories.length,
@@ -55,9 +68,26 @@ export const categoryFilterService = {
       return { income: [], expense: [] };
     }
     
-    return {
-      income: categories.filter(c => c.type === 0),
-      expense: categories.filter(c => c.type === 1)
-    };
+    const income = [];
+    const expense = [];
+    
+    categories.forEach(category => {
+      let categoryType = category.type;
+      if (typeof categoryType === 'number') {
+        categoryType = categoryType === 0 ? 'INCOME' : 'EXPENSE';
+      } else {
+        categoryType = String(categoryType).toUpperCase();
+      }
+      
+      if (categoryType === 'INCOME') {
+        income.push(category);
+      } else if (categoryType === 'EXPENSE') {
+        expense.push(category);
+      }
+    });
+    
+    console.log('Separated - Income:', income.length, 'Expense:', expense.length);
+    
+    return { income, expense };
   }
 };
