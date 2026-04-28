@@ -20,6 +20,7 @@ namespace ExpenseTracker.API.Controllers
             _logger = logger;
         }
 
+        // ── GET /api/category ─────────────────────────────────────────────────
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CategoryResponse>>> GetAll(
             [FromQuery] TransactionType? type = null)
@@ -32,15 +33,7 @@ namespace ExpenseTracker.API.Controllers
                     query = query.Where(c => c.Type == type.Value);
 
                 var categories = await query
-                    .Select(c => new CategoryResponse
-                    {
-                        Id = c.Id,
-                        Name = c.Name,
-                        Type = c.Type,
-                        Description = c.Description,
-                        Icon = c.Icon,
-                        Color = c.Color
-                    })
+                    .Select(c => ToResponse(c))
                     .ToListAsync();
 
                 return Ok(categories);
@@ -52,6 +45,7 @@ namespace ExpenseTracker.API.Controllers
             }
         }
 
+        // ── GET /api/category/{id} ────────────────────────────────────────────
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryResponse>> GetById(int id)
         {
@@ -62,60 +56,34 @@ namespace ExpenseTracker.API.Controllers
                 if (category == null)
                     return NotFound(new { message = "Category not found" });
 
-                var response = new CategoryResponse
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Type = category.Type,
-                    Description = category.Description,
-                    Icon = category.Icon,
-                    Color = category.Color
-                };
-
-                return Ok(response);
+                return Ok(ToResponse(category));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error getting category by id");
+                _logger.LogError(ex, "Error getting category {Id}", id);
                 return StatusCode(500, new { message = "Error retrieving category" });
             }
         }
 
+        // ── POST /api/category ────────────────────────────────────────────────
         [HttpPost]
         public async Task<ActionResult<CategoryResponse>> Create(CreateCategoryRequest request)
         {
             try
             {
-                // Validate required fields
-                if (string.IsNullOrWhiteSpace(request.Name))
-                    return BadRequest(new { message = "Category name is required" });
-
-                if (string.IsNullOrWhiteSpace(request.Icon))
-                    return BadRequest(new { message = "Category icon is required" });
-
                 var category = new Category
                 {
-                    Name = request.Name,
-                    Type = request.Type,
-                    Description = request.Description ?? "",
-                    Icon = request.Icon,
-                    Color = request.Color ?? "#64748b"
+                    Name        = request.Name,
+                    Type        = request.Type,
+                    Description = request.Description ?? string.Empty,
+                    Icon        = request.Icon!,
+                    Color       = request.Color ?? "#64748b"
                 };
 
                 _context.Categories.Add(category);
                 await _context.SaveChangesAsync();
 
-                var response = new CategoryResponse
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Type = category.Type,
-                    Description = category.Description,
-                    Icon = category.Icon,
-                    Color = category.Color
-                };
-
-                return CreatedAtAction(nameof(GetById), new { id = category.Id }, response);
+                return CreatedAtAction(nameof(GetById), new { id = category.Id }, ToResponse(category));
             }
             catch (Exception ex)
             {
@@ -124,6 +92,7 @@ namespace ExpenseTracker.API.Controllers
             }
         }
 
+        // ── PUT /api/category/{id} ────────────────────────────────────────────
         [HttpPut("{id}")]
         public async Task<ActionResult<CategoryResponse>> Update(int id, UpdateCategoryRequest request)
         {
@@ -134,40 +103,24 @@ namespace ExpenseTracker.API.Controllers
                 if (category == null)
                     return NotFound(new { message = "Category not found" });
 
-                // Validate required fields
-                if (string.IsNullOrWhiteSpace(request.Name))
-                    return BadRequest(new { message = "Category name is required" });
-
-                if (string.IsNullOrWhiteSpace(request.Icon))
-                    return BadRequest(new { message = "Category icon is required" });
-
-                category.Name = request.Name;
-                category.Type = request.Type;
-                category.Description = request.Description ?? "";
-                category.Icon = request.Icon;
-                category.Color = request.Color ?? "#64748b";
+                category.Name        = request.Name;
+                category.Type        = request.Type;
+                category.Description = request.Description ?? string.Empty;
+                category.Icon        = request.Icon!;
+                category.Color       = request.Color ?? "#64748b";
 
                 await _context.SaveChangesAsync();
 
-                var response = new CategoryResponse
-                {
-                    Id = category.Id,
-                    Name = category.Name,
-                    Type = category.Type,
-                    Description = category.Description,
-                    Icon = category.Icon,
-                    Color = category.Color
-                };
-
-                return Ok(response);
+                return Ok(ToResponse(category));
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error updating category");
+                _logger.LogError(ex, "Error updating category {Id}", id);
                 return StatusCode(500, new { message = "Error updating category" });
             }
         }
 
+        // ── DELETE /api/category/{id} ─────────────────────────────────────────
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -183,7 +136,7 @@ namespace ExpenseTracker.API.Controllers
                           || await _context.Expenses.AnyAsync(e => e.CategoryId == id);
 
                 if (inUse)
-                    return BadRequest(new { message = "Cannot delete category that is in use" });
+                    return BadRequest(new { message = "Cannot delete a category that is currently in use" });
 
                 _context.Categories.Remove(category);
                 await _context.SaveChangesAsync();
@@ -192,9 +145,20 @@ namespace ExpenseTracker.API.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error deleting category");
+                _logger.LogError(ex, "Error deleting category {Id}", id);
                 return StatusCode(500, new { message = "Error deleting category" });
             }
         }
+
+        // ── Private helper ────────────────────────────────────────────────────
+        private static CategoryResponse ToResponse(Category c) => new()
+        {
+            Id          = c.Id,
+            Name        = c.Name,
+            Type        = c.Type,
+            Description = c.Description,
+            Icon        = c.Icon,
+            Color       = c.Color
+        };
     }
 }

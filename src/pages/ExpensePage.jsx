@@ -28,10 +28,8 @@ function ExpensePage() {
 
         setExpenses(expenseData);
 
-        const expenseCats = categoryData.filter(c =>
-          c.type === 1 ||
-          c.type?.toString().toUpperCase() === 'EXPENSE'
-        );
+        const expenseCats = categoryData.filter(c => c.type?.toUpperCase() === 'EXPENSE')
+
 
         setCategories(expenseCats);
       } catch (err) {

@@ -11,104 +11,102 @@ namespace ExpenseTracker.API.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<TransactionController> _logger;
 
-        public TransactionController(AppDbContext context)
+        public TransactionController(AppDbContext context, ILogger<TransactionController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
-        // GET: api/transaction
+        // ── GET /api/transaction ──────────────────────────────────────────────
         [HttpGet]
         public async Task<IActionResult> GetAll(
-            DateOnly? from,
-            DateOnly? to,
-            TransactionType? type,
-            int? categoryId,
-            string? search)
+            [FromQuery] DateOnly? from = null,
+            [FromQuery] DateOnly? to = null,
+            [FromQuery] TransactionType? type = null,
+            [FromQuery] int? categoryId = null,
+            [FromQuery] string? search = null)
         {
-            // 1. Load expenses + incomes with category
-            var expenses = await _context.Expenses
-                .Include(e => e.Category)
-                .ToListAsync();
-
-            var incomes = await _context.Incomes
-                .Include(i => i.Category)
-                .ToListAsync();
-
-            // 2. Map to TransactionResponse DTO
-            var expenseTransactions = expenses.Select(e => new TransactionResponse
+            try
             {
-                Id = e.Id,
-                Name = e.Reason ?? "Expense",
-                Type = TransactionType.EXPENSE,
-                Method = e.Method,
-                Source = e.Reason,
-                Amount = e.Amount,
-                Date = e.Date,
-                CategoryId = e.CategoryId,
-                CategoryName = e.Category.Name,
-                CategoryIcon = e.Category.Icon,
-                CategoryColor = e.Category.Color
-            });
+                // push type + categoryId filters to DB, load the rest in memory
+                var expenseQuery = _context.Expenses.Include(e => e.Category).AsQueryable();
+                var incomeQuery  = _context.Incomes.Include(i => i.Category).AsQueryable();
 
-            var incomeTransactions = incomes.Select(i => new TransactionResponse
-            {
-                Id = i.Id,
-                Name = i.Source ?? "Income",
-                Type = TransactionType.INCOME,
-                Method = i.Method,
-                Source = i.Source,
-                Amount = i.Amount,
-                Date = i.Date,
-                CategoryId = i.CategoryId,
-                CategoryName = i.Category.Name,
-                CategoryIcon = i.Category.Icon,
-                CategoryColor = i.Category.Color
-            });
+                if (type == TransactionType.EXPENSE)
+                    incomeQuery = incomeQuery.Where(i => false);
+                else if (type == TransactionType.INCOME)
+                    expenseQuery = expenseQuery.Where(e => false);
 
-            // 3. Merge
-            var transactions = expenseTransactions
-                .Concat(incomeTransactions)
+                if (categoryId.HasValue)
+                {
+                    expenseQuery = expenseQuery.Where(e => e.CategoryId == categoryId.Value);
+                    incomeQuery  = incomeQuery.Where(i => i.CategoryId == categoryId.Value);
+                }
+
+                var expenses = await expenseQuery.ToListAsync();
+                var incomes  = await incomeQuery.ToListAsync();
+
+                var transactions = expenses.Select(e => new TransactionResponse
+                {
+                    Id            = e.Id,
+                    Name          = e.Reason ?? e.Category?.Name ?? "Expense",
+                    Type          = TransactionType.EXPENSE,
+                    Method        = e.Method,
+                    Source        = e.Reason,
+                    Amount        = e.Amount,
+                    Date          = e.Date,
+                    CategoryId    = e.CategoryId,
+                    CategoryName  = e.Category?.Name  ?? string.Empty,
+                    CategoryIcon  = e.Category?.Icon  ?? string.Empty,
+                    CategoryColor = e.Category?.Color ?? string.Empty
+                })
+                .Concat(incomes.Select(i => new TransactionResponse
+                {
+                    Id            = i.Id,
+                    Name          = i.Source ?? i.Category?.Name ?? "Income",
+                    Type          = TransactionType.INCOME,
+                    Method        = i.Method,
+                    Source        = i.Source,
+                    Amount        = i.Amount,
+                    Date          = i.Date,
+                    CategoryId    = i.CategoryId,
+                    CategoryName  = i.Category?.Name  ?? string.Empty,
+                    CategoryIcon  = i.Category?.Icon  ?? string.Empty,
+                    CategoryColor = i.Category?.Color ?? string.Empty
+                }))
                 .AsQueryable();
 
-            // 4. Filters
-            if (from.HasValue)
-                transactions = transactions.Where(t => DateOnly.FromDateTime(t.Date) >= from.Value);
+                if (from.HasValue)
+                    transactions = transactions.Where(t => DateOnly.FromDateTime(t.Date) >= from.Value);
 
-            if (to.HasValue)
-                transactions = transactions.Where(t => DateOnly.FromDateTime(t.Date) <= to.Value);
+                if (to.HasValue)
+                    transactions = transactions.Where(t => DateOnly.FromDateTime(t.Date) <= to.Value);
 
-            if (type.HasValue)
-                transactions = transactions.Where(t => t.Type == type.Value);
+                if (!string.IsNullOrEmpty(search))
+                    transactions = transactions.Where(t =>
+                        t.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
 
-            if (categoryId.HasValue)
-                transactions = transactions.Where(t => t.CategoryId == categoryId.Value);
+                var result = transactions.OrderByDescending(t => t.Date).ToList();
 
-            if (!string.IsNullOrEmpty(search))
-                transactions = transactions.Where(t => t.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
+                var totalIncome  = result.Where(t => t.Type == TransactionType.INCOME).Sum(t => t.Amount);
+                var totalExpense = result.Where(t => t.Type == TransactionType.EXPENSE).Sum(t => t.Amount);
 
-            // 5. Sort
-            var result = transactions
-                .OrderByDescending(t => t.Date)
-                .ToList();
-
-            // 6. Summary
-            var totalIncome = result
-                .Where(t => t.Type == TransactionType.INCOME)
-                .Sum(t => t.Amount);
-
-            var totalExpense = result
-                .Where(t => t.Type == TransactionType.EXPENSE)
-                .Sum(t => t.Amount);
-
-            return Ok(new
+                return Ok(new
+                {
+                    transactions     = result,
+                    totalIncome,
+                    totalExpense,
+                    balance          = totalIncome - totalExpense,
+                    transactionCount = result.Count
+                });
+            }
+            catch (Exception ex)
             {
-                transactions = result,
-                totalIncome,
-                totalExpense,
-                balance = totalIncome - totalExpense,
-                transactionCount = result.Count
-            });
+                _logger.LogError(ex, "Error getting transactions");
+                return StatusCode(500, new { message = "Error retrieving transactions" });
+            }
         }
     }
 }
