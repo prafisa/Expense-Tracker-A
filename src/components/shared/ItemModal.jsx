@@ -24,7 +24,7 @@ function inputClass(hasError) {
       : 'border-zinc-200 bg-zinc-50 focus:border-violet-400 focus:bg-white',
   ].join(' ')
 }
-
+ 
 export default function ItemModal({
   open,
   onClose,
