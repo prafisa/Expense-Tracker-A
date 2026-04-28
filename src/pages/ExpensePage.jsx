@@ -5,52 +5,58 @@ import ItemModal from "../components/shared/ItemModal";
 import { expenseService } from "../services/expenseService";
 import { categoryService } from "../services/CategoryService";
 
+const EMPTY_FILTERS = { search: "", category: "", method: "", dateFrom: "", dateTo: "" };
+
 function ExpensePage() {
-  const [expenses, setExpenses] = useState([]);
+  const [expenses, setExpenses]     = useState([]);
   const [categories, setCategories] = useState([]);
-  const [isModalOpen, setModal] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [isModalOpen, setModal]     = useState(false);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState(null);
+  const [filters, setFilters]       = useState(EMPTY_FILTERS);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-
         const [expenseData, categoryData] = await Promise.all([
           expenseService.getAllExpenses(),
           categoryService.getAllCategories()
         ]);
-
         setExpenses(expenseData);
-
-        const expenseCats = categoryData.filter(
-          c => c.type?.toUpperCase() === "EXPENSE"
-        );
-
-        setCategories(expenseCats);
+        setCategories(categoryData.filter(c => c.type?.toUpperCase() === "EXPENSE"));
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
+  const filtered = expenses.filter(e => {
+    if (filters.search   && !e.reason?.toLowerCase().includes(filters.search.toLowerCase())
+                         && !e.categoryName?.toLowerCase().includes(filters.search.toLowerCase())) return false
+    if (filters.category && e.categoryName !== filters.category) return false
+    if (filters.method   && e.method !== filters.method)         return false
+    if (filters.dateFrom && e.date?.slice(0, 10) < filters.dateFrom) return false
+    if (filters.dateTo   && e.date?.slice(0, 10) > filters.dateTo)   return false
+    return true
+  });
+
+  function handleFilterChange(key, value) {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  }
+
   const handleSave = async (formData) => {
     try {
-      const backendData = {
-        method: formData.method ?? 0,
-        reason: formData.title,
-        amount: formData.amount,
-        date: formData.date,
+      const newExpense = await expenseService.createExpense({
+        method:     formData.method ?? 0,
+        reason:     formData.note,
+        amount:     formData.amount,
+        date:       formData.date,
         categoryId: formData.categoryId,
-      };
-
-      const newExpense = await expenseService.createExpense(backendData);
-
+      });
       setExpenses(prev => [newExpense, ...prev]);
       setModal(false);
     } catch (err) {
@@ -59,30 +65,22 @@ function ExpensePage() {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Delete this expense?")) {
-      try {
-        await expenseService.deleteExpense(id);
-        setExpenses(prev => prev.filter(e => e.id !== id));
-      } catch (err) {
-        alert(err.message);
-      }
+    if (!window.confirm("Delete this expense?")) return;
+    try {
+      await expenseService.deleteExpense(id);
+      setExpenses(prev => prev.filter(e => e.id !== id));
+    } catch (err) {
+      alert(err.message);
     }
   };
 
-  const handleClose = () => setModal(false);
-
-  if (loading)
-    return <div className="p-6 text-sm text-gray-400">Loading...</div>;
-
-  if (error)
-    return <div className="p-6 text-sm text-red-500">Error: {error}</div>;
+  if (loading) return <div className="p-6 text-sm text-gray-400">Loading...</div>;
+  if (error)   return <div className="p-6 text-sm text-red-500">Error: {error}</div>;
 
   return (
     <div>
-
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-xl font-medium text-gray-800">Expenses</h1>
-
         <button
           onClick={() => setModal(true)}
           className="bg-violet-600 hover:bg-violet-700 text-white text-sm px-4 py-2 rounded-lg"
@@ -91,22 +89,24 @@ function ExpensePage() {
         </button>
       </div>
 
-      <ExpenseSummary expenses={expenses} />
+      <ExpenseSummary expenses={filtered} />
 
-  
       <ExpenseList
-        expenses={expenses}
+        expenses={filtered}
+        categories={categories}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onClear={() => setFilters(EMPTY_FILTERS)}
         onDelete={handleDelete}
       />
 
       <ItemModal
         open={isModalOpen}
-        onClose={handleClose}
+        onClose={() => setModal(false)}
         onSave={handleSave}
         lockedType="expense"
         categories={categories}
       />
-
     </div>
   );
 }
