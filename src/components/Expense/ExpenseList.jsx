@@ -1,37 +1,67 @@
 import ExpenseCard from './ExpenseCard'
 
-function ExpenseList({ expenses, onDelete }) {   
+const METHODS = ["CASH", "ESEWA", "KHALTI", "MOBILE_BANKING"]
+
+function ExpenseList({ expenses, categories, filters, onFilterChange, onClear, onDelete }) {
   return (
     <div className="flex flex-col gap-4">
 
+      {/* Filters */}
       <div className="bg-white border border-slate-100 rounded-xl px-5 py-4">
         <div className="flex flex-wrap gap-3">
           <input
             type="text"
-            placeholder="Search by name..."
+            placeholder="Search by name or category..."
+            value={filters.search}
+            onChange={e => onFilterChange("search", e.target.value)}
             className="flex-1 min-w-48 border border-slate-200 rounded-lg px-4 py-2 text-sm text-slate-600"
           />
-          <select className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500">
+
+          <select
+            value={filters.category}
+            onChange={e => onFilterChange("category", e.target.value)}
+            className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500"
+          >
             <option value="">All categories</option>
-            <option value="Food">Food & Dining</option>
-            <option value="Transport">Transport</option>
-            <option value="Entertainment">Entertainment</option>
-            <option value="Utilities">Utilities</option>
-            <option value="Health">Health</option>
-            <option value="Shopping">Shopping</option>
+            {categories.map(c => (
+              <option key={c.id} value={c.name}>{c.name}</option>
+            ))}
           </select>
-          <select className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500">
-            <option value="">All sources</option>
-            <option value="Cash">Cash</option>
-            <option value="eSewa">eSewa</option>
-            <option value="Mobile Banking">Mobile Banking</option>
+
+          <select
+            value={filters.method}
+            onChange={e => onFilterChange("method", e.target.value)}
+            className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500"
+          >
+            <option value="">All methods</option>
+            {METHODS.map(m => (
+              <option key={m} value={m}>{m.replace("_", " ")}</option>
+            ))}
           </select>
-          <input type="date" className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500" />
-          <input type="date" className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500" />
-          <button className="text-sm text-slate-400 hover:text-slate-600">Clear</button>
+
+          <input
+            type="date"
+            value={filters.dateFrom}
+            onChange={e => onFilterChange("dateFrom", e.target.value)}
+            className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500"
+          />
+          <input
+            type="date"
+            value={filters.dateTo}
+            onChange={e => onFilterChange("dateTo", e.target.value)}
+            className="border border-slate-200 rounded-lg px-3 py-2 text-sm text-slate-500"
+          />
+
+          <button
+            onClick={onClear}
+            className="text-sm text-slate-400 hover:text-slate-600"
+          >
+            Clear
+          </button>
         </div>
       </div>
 
+      {/* Table */}
       <div className="bg-white border border-slate-100 rounded-xl p-5">
         <table className="w-full">
           <thead>
@@ -39,19 +69,27 @@ function ExpenseList({ expenses, onDelete }) {
               <th className="text-xs font-medium text-slate-400 text-left pb-3">CATEGORY</th>
               <th className="text-xs font-medium text-slate-400 text-left pb-3">NAME</th>
               <th className="text-xs font-medium text-slate-400 text-left pb-3">DATE</th>
-              <th className="text-xs font-medium text-slate-400 text-left pb-3">SOURCE</th>
+              <th className="text-xs font-medium text-slate-400 text-left pb-3">METHOD</th>
               <th className="text-xs font-medium text-slate-400 text-left pb-3">AMOUNT</th>
               <th className="text-xs font-medium text-slate-400 text-left pb-3">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {expenses.map((expense) => (
-              <ExpenseCard
-                key={expense.id}
-                expense={expense}         
-                onDelete={onDelete}       
-              />
-            ))}
+            {expenses.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center text-sm text-slate-400 py-8">
+                  No expenses found
+                </td>
+              </tr>
+            ) : (
+              expenses.map(expense => (
+                <ExpenseCard
+                  key={expense.id}
+                  expense={expense}
+                  onDelete={onDelete}
+                />
+              ))
+            )}
           </tbody>
         </table>
       </div>
