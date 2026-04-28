@@ -7,16 +7,16 @@ export const expenseService = {
     if (filters.from)       params.append('from', filters.from)
     if (filters.to)         params.append('to', filters.to)
 
-    const response = await fetch(`${API_BASE}/Expense?${params}`)
+    const response = await fetch(`${API_BASE}/expense?${params}`)
     if (!response.ok) throw new Error('Failed to fetch expenses')
     return response.json()
   },
 
   createExpense: async (data) => {
-    const response = await fetch(`${API_BASE}/Expense`, {
+    const response = await fetch(`${API_BASE}/expense`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     })
     const text = await response.text()
     if (!response.ok) throw new Error(text || 'Failed to create expense')
@@ -24,10 +24,8 @@ export const expenseService = {
   },
 
   deleteExpense: async (id) => {
-    const response = await fetch(`${API_BASE}/Expense/${id}`, {
-      method: 'DELETE'
-    })
+    const response = await fetch(`${API_BASE}/expense/${id}`, { method: 'DELETE' })
     if (!response.ok) throw new Error('Failed to delete expense')
     return true
-  }
+  },
 }

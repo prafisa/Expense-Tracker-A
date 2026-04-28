@@ -56,13 +56,14 @@ const BudgetManager = () => {
   };
 
   const loadAllBudgets = async () => {
-    try {
-      const data = await budgetService.getAllBudgets();
-      setBudgets(data);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
+  try {
+    const data = await budgetService.getAllBudgets()
+    // data already has spent, remaining on each budget from backend
+    setBudgets(data)
+  } catch (err) {
+    setError(err.message)
+  }
+}
 
   const loadAvailableDates = async () => {
     try {
@@ -77,50 +78,45 @@ const BudgetManager = () => {
   };
 
   const loadCategories = async () => {
-    try {
-      const data = await budgetService.getAllCategories();
-      setCategories(data);
-    } catch (err) {
-      console.error('Error loading categories:', err);
-    }
-  };
+  try {
+    const data = await budgetService.getAllCategories()
+    // budgets are expense-only, filter here
+    setCategories(data.filter(c => c.type?.toUpperCase() === 'EXPENSE'))
+  } catch (err) {
+    console.error('Error loading categories:', err)
+  }
+}
 
-  const filterBudgets = () => {
-    let filtered = [...budgets];
-    
-    if (selectedYear) {
-      filtered = filtered.filter(b => b.month.startsWith(selectedYear));
-    }
-    
-    if (selectedMonth) {
-      const monthStr = selectedMonth.padStart(2, '0');
-      filtered = filtered.filter(b => b.month.endsWith(monthStr));
-    }
-    
-    if (selectedCategory) {
-      filtered = filtered.filter(b => b.categoryId === parseInt(selectedCategory));
-    }
-    
-    setFilteredBudgets(filtered);
-    
-    if (selectedYear && selectedMonth) {
-      const monthStr = `${selectedYear}-${selectedMonth.padStart(2, '0')}`;
-      const monthlyBudgets = filtered.filter(b => b.month === monthStr);
-      setSummary({
-        month: monthStr,
-        totalBudget: monthlyBudgets.reduce((sum, b) => sum + b.allocated, 0),
-        categoryCount: monthlyBudgets.length
-      });
-    } else if (filtered.length > 0) {
-      setSummary({
-        month: 'All',
-        totalBudget: filtered.reduce((sum, b) => sum + b.allocated, 0),
-        categoryCount: filtered.length
-      });
-    } else {
-      setSummary(null);
-    }
-  };
+ const filterBudgets = () => {
+  let filtered = [...budgets]
+
+  if (selectedYear)
+    filtered = filtered.filter(b => b.month.startsWith(selectedYear))
+
+  if (selectedMonth) {
+    const monthStr = selectedMonth.padStart(2, '0')
+    filtered = filtered.filter(b => b.month.endsWith(monthStr))
+  }
+
+  if (selectedCategory)
+    filtered = filtered.filter(b => b.categoryId === parseInt(selectedCategory))
+
+  setFilteredBudgets(filtered)
+
+  if (filtered.length > 0) {
+    setSummary({
+      month:         selectedYear && selectedMonth
+                       ? `${selectedYear}-${selectedMonth.padStart(2, '0')}`
+                       : 'All',
+      totalBudget:   filtered.reduce((s, b) => s + b.allocated, 0),
+      totalSpent:    filtered.reduce((s, b) => s + b.spent, 0),
+      totalRemaining: filtered.reduce((s, b) => s + b.remaining, 0),
+      categoryCount: filtered.length,
+    })
+  } else {
+    setSummary(null)
+  }
+}
 
   const handleCreateBudget = async (budgetData) => {
     setLoading(true);

@@ -1,88 +1,56 @@
-
-const API_BASE = 'https://localhost:7204/api';
+const API_BASE = 'https://localhost:7204/api'
 
 export const categoryService = {
   getAllCategories: async () => {
-    try {
-      const response = await fetch(`${API_BASE}/Category`);
-      if (!response.ok) throw new Error('Failed to fetch categories');
-      return await response.json();
-    } catch (err) {
-      console.error('Error fetching categories:', err);
-      throw err;
-    }
+    const response = await fetch(`${API_BASE}/category`)
+    if (!response.ok) throw new Error('Failed to fetch categories')
+    return response.json()
   },
 
   createCategory: async (categoryData) => {
-    const submitData = {
-      name: categoryData.name,
-      type: categoryData.type === 'INCOME' ? 0 : 1,
-      description: categoryData.description || '',
-      icon: categoryData.icon,
-      color: categoryData.color
-    };
-    
-    console.log('📝 CREATE CATEGORY:', submitData);
-    
-    const response = await fetch(`${API_BASE}/Category`, {
+    const response = await fetch(`${API_BASE}/category`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(submitData)
-    });
-    
-    const responseText = await response.text();
-    console.log('Response:', response.status, responseText);
-    
+      body: JSON.stringify({
+        name:        categoryData.name,
+        type:        categoryData.type,   // already "INCOME" or "EXPENSE" string
+        description: categoryData.description || '',
+        icon:        categoryData.icon,
+        color:       categoryData.color,
+      }),
+    })
     if (!response.ok) {
-      throw new Error(responseText || 'Failed to create category');
+      const err = await response.text()
+      throw new Error(err || 'Failed to create category')
     }
-    
-    return JSON.parse(responseText);
+    return response.json()
   },
 
-updateCategory: async (id, categoryData) => {
-  // Ensure type is a number (0 for INCOME, 1 for EXPENSE)
-  const submitData = {
-    name: categoryData.name,
-    type: categoryData.type === 'INCOME' ? 0 : 1,
-    description: categoryData.description || '',
-    icon: categoryData.icon,
-    color: categoryData.color
-  };
-  
-  console.log('Sending update data:', submitData);
-  
-  const response = await fetch(`${API_BASE}/Category/${id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(submitData)
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('Update error response:', errorText);
-    throw new Error(errorText || 'Failed to update category');
-  }
-  return response.json();
-},
+  updateCategory: async (id, categoryData) => {
+    const response = await fetch(`${API_BASE}/category/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name:        categoryData.name,
+        type:        categoryData.type,   // already "INCOME" or "EXPENSE" string
+        description: categoryData.description || '',
+        icon:        categoryData.icon,
+        color:       categoryData.color,
+      }),
+    })
+    if (!response.ok) {
+      const err = await response.text()
+      throw new Error(err || 'Failed to update category')
+    }
+    return response.json()
+  },
 
   deleteCategory: async (id) => {
-    try {
-      const response = await fetch(`${API_BASE}/Category/${id}`, {
-        method: 'DELETE'
-      });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        if (errorText.includes('in use')) {
-          throw new Error('Cannot delete category that is in use');
-        }
-        throw new Error(errorText || 'Failed to delete category');
-      }
-      return true;
-    } catch (err) {
-      console.error('Delete error:', err);
-      throw err;
+    const response = await fetch(`${API_BASE}/category/${id}`, { method: 'DELETE' })
+    if (!response.ok) {
+      const err = await response.text()
+      throw new Error(err || 'Failed to delete category')
     }
+    return true
   },
-};
+}

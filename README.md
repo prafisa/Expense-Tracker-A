@@ -1,106 +1,176 @@
-# React + Vite
+# Spendly — Expense Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-stack expense tracking web application built with **React + Tailwind CSS v4** on the frontend and **ASP.NET Core 8 Web API** on the backend.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Dashboard** — summary cards, monthly bar chart, category donut chart, daily spending chart, and recent transactions
+- **Categories** — create and manage income/expense categories with custom icons and colors
+- **Budget** — set monthly spending limits per category, track spent vs remaining in real time
+- **Income** — log income entries with category, payment method, source, and date
+- **Expenses** — log expenses against budgeted categories with reason and payment method
+- **Transactions** — unified view of all income and expenses with filters and pagination
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Frontend
+- React 18
+- Tailwind CSS v4
+- Vite
 
+### Backend
+- ASP.NET Core 8 Web API
+- Entity Framework Core
+- SQL Server
+- Swagger / OpenAPI
 
-{
-  "summary": [
-    { "label": "Total balance", "value": "$12,340", "change": "+2.4% this month", "positive": true },
-    { "label": "Total income", "value": "$5,200", "change": "+$300 vs last month", "positive": true },
-    { "label": "Total expenses", "value": "$3,460", "change": "+$120 vs last month", "positive": false },
-    { "label": "Net savings", "value": "$1,740", "change": "33% savings rate", "positive": true }
-  ],
+---
 
-  
-  "categories": [
-  [
-  {  "id": 1, "name": "Food & Dining", "type": "EXPENSE", "value": 0, "color": "#FF8042" },
-  {  "id": 2, "name": "Transport", "type": "EXPENSE", "value": 0, "color": "#0088FE" },
-  {  "id": 3, "name": "Health", "type": "EXPENSE", "value": 0, "color": "#00C49F" },
-  {  "id": 4, "name": "Utilities", "type": "EXPENSE", "value": 0, "color": "#FFBB28" },
-  {  "id": 5, "name": "Shopping", "type": "EXPENSE", "value": 0, "color": "#FF6B6B" },
-  {  "id": 6, "name": "Entertainment", "type": "EXPENSE", "value": 0, "color": "#845EC2" }
-]
-  ],
+## Project Structure
 
-  "transactions": [
-    {
-      "id": 1,
-      "name": "Monthly salary",
-      "type": "INCOME",
-      "categoryId": 1,
-      "date": "2026-04-15",
-      "amount": 3200
-    },
-    {
-      "id": 2,
-      "name": "Freelance project",
-      "type": "INCOME",
-      "categoryId": 2,
-      "date": "2026-04-09",
-      "amount": 2000
-    },
-    {
-      "id": 3,
-      "name": "Groceries",
-      "type": "EXPENSE",
-      "categoryId": 3,
-      "date": "2026-04-18",
-      "amount": 64
-    },
-    {
-      "id": 4,
-      "name": "Fuel",
-      "type": "EXPENSE",
-      "categoryId": 4,
-      "date": "2026-04-14",
-      "amount": 48
-    },
-    {
-      "id": 5,
-      "name": "Doctor visit",
-      "type": "EXPENSE",
-      "categoryId": 5,
-      "date": "2026-04-12",
-      "amount": 120
-    },
-    {
-      "id": 6,
-      "name": "Electricity bill",
-      "type": "EXPENSE",
-      "categoryId": 6,
-      "date": "2026-04-10",
-      "amount": 85
-    },
-    {
-      "id": 7,
-      "name": "Headphones",
-      "type": "EXPENSE",
-      "categoryId": 7,
-      "date": "2026-04-08",
-      "amount": 150
-    },
-    {
-      "id": 8,
-      "name": "Cinema ticket",
-      "type": "EXPENSE",
-      "categoryId": 8,
-      "date": "2026-04-06",
-      "amount": 35
-    }
-  ]
-}
- 
+```
+Expense-Tracker-A/
+├── backend/
+│   └── ExpenseTracker.API/
+│       ├── Controllers/
+│       │   ├── CategoryController.cs
+│       │   ├── IncomeController.cs
+│       │   ├── ExpenseController.cs
+│       │   ├── BudgetController.cs
+│       │   ├── TransactionController.cs
+│       │   └── DashboardController.cs
+│       ├── Models/
+│       ├── DTOs/
+│       ├── Data/
+│       └── Enums/
+└── src/
+    ├── components/
+    │   ├── Budget/
+    │   ├── Category/
+    │   ├── Dashboard/
+    │   ├── Expense/
+    │   ├── Income/
+    │   ├── Transactions/
+    │   └── shared/
+    ├── pages/
+    ├── services/
+    └── utils/
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- [Node.js](https://nodejs.org/) (v18+)
+- SQL Server (local or Docker)
+
+---
+
+### Backend Setup
+
+1. Navigate to the backend folder:
+   ```bash
+   cd backend/ExpenseTracker.API
+   ```
+
+2. Update the connection string in `appsettings.json`:
+   ```json
+   "ConnectionStrings": {
+     "DefaultConnection": "Server=localhost;Database=ExpenseTrackerDb;Trusted_Connection=True;TrustServerCertificate=True"
+   }
+   ```
+
+3. Apply migrations and seed the database:
+   ```bash
+   dotnet ef database update
+   ```
+
+4. Run the API:
+   ```bash
+   dotnet run
+   ```
+
+The API will be available at `https://localhost:7204`. Swagger UI is at `https://localhost:7204/swagger`.
+
+---
+
+### Frontend Setup
+
+1. Navigate to the frontend folder:
+   ```bash
+   cd Expense-Tracker-A
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+
+The app will be available at `http://localhost:5173`.
+
+---
+
+## API Endpoints
+
+| Module | Method | Endpoint | Description |
+|--------|--------|----------|-------------|
+| Category | GET | `/api/category` | Get all categories |
+| Category | POST | `/api/category` | Create category |
+| Category | PUT | `/api/category/{id}` | Update category |
+| Category | DELETE | `/api/category/{id}` | Delete category |
+| Income | GET | `/api/income` | Get all incomes |
+| Income | POST | `/api/income` | Create income |
+| Income | DELETE | `/api/income/{id}` | Delete income |
+| Expense | GET | `/api/expense` | Get all expenses |
+| Expense | POST | `/api/expense` | Create expense |
+| Expense | PUT | `/api/expense/{id}` | Update expense |
+| Expense | DELETE | `/api/expense/{id}` | Delete expense |
+| Budget | GET | `/api/budget` | Get all budgets |
+| Budget | GET | `/api/budget/summary/{month}` | Get budget summary with spent/remaining |
+| Budget | POST | `/api/budget` | Create budget |
+| Budget | PUT | `/api/budget/{id}` | Update budget |
+| Budget | DELETE | `/api/budget/{id}` | Delete budget |
+| Transaction | GET | `/api/transaction` | Get merged income + expense view |
+| Dashboard | GET | `/api/dashboard/summary` | Get full dashboard data |
+
+---
+
+## Business Logic
+
+- **Categories** must be created before adding any income or expense
+- **Budgets** can only be assigned to `EXPENSE` type categories
+- A **budget must exist** for a category and month before an expense can be logged against it
+- **Income** only requires a valid `INCOME` type category — no budget needed
+- **Spent** and **Remaining** on budgets are calculated in real time from actual expense records
+- The **Transaction** view is built directly from Income and Expense records for accuracy
+
+---
+
+## Payment Methods Supported
+
+- Cash
+- eSewa
+- Khalti
+- Mobile Banking
+
+---
+
+Still needs a bit of refactoring
+
+---
+
+## License
+
+MIT
