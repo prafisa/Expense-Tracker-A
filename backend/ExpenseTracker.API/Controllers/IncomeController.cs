@@ -12,149 +12,151 @@ namespace ExpenseTracker.API.Controllers;
 public class IncomeController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly ILogger<IncomeController> _logger;
 
-    public IncomeController(AppDbContext context)
+    public IncomeController(AppDbContext context, ILogger<IncomeController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
-    [HttpGet]
+    // ── GET /api/income ───────────────────────────────────────────────────────
     [HttpGet]
     public async Task<ActionResult<IEnumerable<IncomeResponse>>> GetAll()
     {
-        var incomes = await _context.Incomes
-            .Include(i => i.Category)
-            .Select(i => new IncomeResponse
-            {
-                Id = i.Id,
-                Method = i.Method,
-                Source = i.Source,
-                Amount = i.Amount,
-                Date = i.Date,
-                CategoryId = i.CategoryId,
-                CategoryName = i.Category.Name ?? string.Empty,
-                CategoryIcon = i.Category.Icon ?? string.Empty,
-                CategoryColor = i.Category.Color ?? string.Empty
-            })
-            .ToListAsync();
-        return Ok(incomes);
+        try
+        {
+            var incomes = await _context.Incomes
+                .Include(i => i.Category)
+                .Select(i => ToResponse(i))
+                .ToListAsync();
+
+            return Ok(incomes);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting incomes");
+            return StatusCode(500, new { message = "Error retrieving incomes" });
+        }
     }
 
+    // ── GET /api/income/{id} ──────────────────────────────────────────────────
     [HttpGet("{id}")]
     public async Task<ActionResult<IncomeResponse>> GetById(int id)
     {
-        var income = await _context.Incomes
-            .Include(i => i.Category)
-            .FirstOrDefaultAsync(i => i.Id == id);
-
-        if (income == null) return NotFound();
-
-        var response = new IncomeResponse
+        try
         {
-            Id = income.Id,
-            Method = income.Method,
-            Source = income.Source,
-            Amount = income.Amount,
-            Date = income.Date,
-            CategoryId = income.CategoryId,
-            CategoryName = income.Category?.Name ?? string.Empty,
-            CategoryIcon = income.Category?.Icon ?? string.Empty,
-            CategoryColor = income.Category?.Color ?? string.Empty
-        };
+            var income = await _context.Incomes
+                .Include(i => i.Category)
+                .FirstOrDefaultAsync(i => i.Id == id);
 
-        return Ok(response);
+            if (income == null)
+                return NotFound(new { message = "Income not found" });
+
+            return Ok(ToResponse(income));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting income {Id}", id);
+            return StatusCode(500, new { message = "Error retrieving income" });
+        }
     }
 
+    // ── POST /api/income ──────────────────────────────────────────────────────
     [HttpPost]
     public async Task<ActionResult<IncomeResponse>> Create(CreateIncomeRequest request)
     {
-        var category = await _context.Categories.FindAsync(request.CategoryId);
-        if (category == null) return BadRequest("Category not found");
-
-        var income = new Income
+        try
         {
-            Method = request.Method,
-            Source = request.Source,
-            Amount = request.Amount,
-            Date = request.Date,
-            CategoryId = request.CategoryId
-        };
+            var category = await _context.Categories.FindAsync(request.CategoryId);
 
-        _context.Incomes.Add(income);
+            if (category == null)
+                return BadRequest(new { message = "Category not found" });
 
-        var transaction = new Transaction
+            if (category.Type != TransactionType.INCOME)
+                return BadRequest(new { message = "Category must be of type INCOME" });
+
+            var income = new Income
+            {
+                Method     = request.Method,
+                Source     = request.Source,
+                Amount     = request.Amount,
+                Date       = request.Date,
+                CategoryId = request.CategoryId
+            };
+
+            _context.Incomes.Add(income);
+
+            var transaction = new Transaction
+            {
+                Name       = request.Source ?? category.Name,
+                Type       = TransactionType.INCOME,
+                Method     = request.Method,
+                Source     = request.Source,
+                Amount     = request.Amount,
+                Date       = request.Date,
+                CategoryId = request.CategoryId
+            };
+
+            _context.Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetById), new { id = income.Id }, ToResponse(income));
+        }
+        catch (Exception ex)
         {
-            Type = TransactionType.INCOME,
-            Method = request.Method,
-            Source = request.Source,
-            Amount = request.Amount,
-            Date = request.Date,
-            CategoryId = request.CategoryId
-        };
-
-        _context.Transactions.Add(transaction);
-        await _context.SaveChangesAsync();
-
-        var response = new IncomeResponse
-        {
-            Id = income.Id,
-            Method = income.Method,
-            Source = income.Source,
-            Amount = income.Amount,
-            Date = income.Date,
-            CategoryId = income.CategoryId,
-            CategoryName = category.Name,
-            CategoryIcon = category.Icon ?? string.Empty,
-            CategoryColor = category.Color ?? string.Empty
-        };
-
-        return CreatedAtAction(nameof(GetById), new { id = income.Id }, response);
+            _logger.LogError(ex, "Error creating income");
+            return StatusCode(500, new { message = "Error creating income" });
+        }
     }
-
-    [HttpPut("{id}")]
-    public async Task<ActionResult<IncomeResponse>> Update(int id, UpdateIncomeRequest request)
-    {
-        var income = await _context.Incomes
-            .Include(i => i.Category)
-            .FirstOrDefaultAsync(i => i.Id == id);
-
-        if (income == null) return NotFound();
-
-        var category = await _context.Categories.FindAsync(request.CategoryId);
-        if (category == null) return BadRequest("Category not found");
-
-        income.Method = request.Method;
-        income.Source = request.Source;
-        income.Amount = request.Amount;
-        income.Date = request.Date;
-        income.CategoryId = request.CategoryId;
-
-        await _context.SaveChangesAsync();
-
-        var response = new IncomeResponse
-        {
-            Id = income.Id,
-            Method = income.Method,
-            Source = income.Source,
-            Amount = income.Amount,
-            Date = income.Date,
-            CategoryId = income.CategoryId,
-            CategoryName = category.Name,
-            CategoryIcon = category.Icon ?? string.Empty,
-            CategoryColor = category.Color ?? string.Empty
-        };
-
-        return Ok(response);
-    }
-
+    
+    // ── DELETE /api/income/{id} ───────────────────────────────────────────────
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var income = await _context.Incomes.FindAsync(id);
-        if (income == null) return NotFound();
+        try
+        {
+            var income = await _context.Incomes
+                .Include(i => i.Category)
+                .FirstOrDefaultAsync(i => i.Id == id);
 
-        _context.Incomes.Remove(income);
-        await _context.SaveChangesAsync();
-        return NoContent();
+            if (income == null)
+                return NotFound(new { message = "Income not found" });
+
+            // remove mirror Transaction record
+            var transaction = await _context.Transactions
+                .FirstOrDefaultAsync(t =>
+                    t.CategoryId == income.CategoryId &&
+                    t.Type       == TransactionType.INCOME &&
+                    t.Date       == income.Date &&
+                    t.Amount     == income.Amount);
+
+            if (transaction != null)
+                _context.Transactions.Remove(transaction);
+
+            _context.Incomes.Remove(income);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting income {Id}", id);
+            return StatusCode(500, new { message = "Error deleting income" });
+        }
     }
+
+    // ── Private helper ────────────────────────────────────────────────────────
+    private static IncomeResponse ToResponse(Income i) => new()
+    {
+        Id            = i.Id,
+        Method        = i.Method,
+        Source        = i.Source,
+        Amount        = i.Amount,
+        Date          = i.Date,
+        CategoryId    = i.CategoryId,
+        CategoryName  = i.Category?.Name  ?? string.Empty,
+        CategoryIcon  = i.Category?.Icon  ?? string.Empty,
+        CategoryColor = i.Category?.Color ?? string.Empty
+    };
 }

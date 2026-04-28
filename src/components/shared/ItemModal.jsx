@@ -41,14 +41,11 @@ export default function ItemModal({
     setErrors({})
   }, [open])
 
-  const filteredCats = categories.filter(c => {
-    if (c.type === undefined || c.type === null) return false
-    const catType = typeof c.type === 'number'
-      ? (c.type === 0 ? 'income' : 'expense')
-      : c.type.toLowerCase()
-    const formType = (form.type ?? lockedType ?? 'expense').toLowerCase()
-    return catType === formType
-  })
+
+const filteredCats = categories.filter(c => {
+  if (!c.type) return false
+  return c.type.toUpperCase() === (form.type ?? lockedType ?? 'expense').toUpperCase()
+})
 
   const isIncome = form.type === 'income'
 

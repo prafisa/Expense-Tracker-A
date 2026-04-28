@@ -16,6 +16,7 @@ namespace ExpenseTracker.API.DTOs.Category
         [MaxLength(255)]
         public string? Description { get; set; }
 
+        [Required]
         [MaxLength(100)]
         public string? Icon { get; set; }
 
