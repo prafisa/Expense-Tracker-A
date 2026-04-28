@@ -82,10 +82,7 @@ namespace ExpenseTracker.API.Controllers
         [HttpPost]
         public async Task<ActionResult<ExpenseDto>> Create(CreateExpenseRequest request)
         {
-            var category = await _context.Categories.FindAsync(request.CategoryId);
-            if (category == null) return BadRequest("Category not found");
-
-            var expense = new Expense
+            try
             {
                 var category = await _context.Categories.FindAsync(request.CategoryId);
 
