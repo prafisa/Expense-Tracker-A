@@ -47,32 +47,32 @@ const BudgetTableRow = ({ budget, onEdit, onDelete }) => {
         </div>
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap text-right">
+      <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm font-semibold text-slate-900">
           {formatCurrency(budget.allocated)}
         </div>
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap text-right">
+      <td className="px-6 py-4 whitespace-nowrap">
         <div className="text-sm text-rose-600">
           {formatCurrency(spentAmount)}
         </div>
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap text-right">
+      <td className="px-6 py-4 whitespace-nowrap">
         <div className={`text-sm font-medium ${remainingAmount >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
           {formatCurrency(Math.abs(remainingAmount))}
           {remainingAmount < 0 && ' (Over)'}
         </div>
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap text-center">
+      <td className="px-6 py-4 whitespace-nowrap">
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor()}`}>
           {getStatusText()}
         </span>
       </td>
       
-      <td className="px-6 py-4 whitespace-nowrap text-center">
+      <td className="px-6 py-4 whitespace-nowrap ">
         <div className="flex items-center justify-center gap-2">
           <button
             onClick={onEdit}
