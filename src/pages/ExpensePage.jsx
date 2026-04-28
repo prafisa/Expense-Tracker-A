@@ -1,80 +1,111 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ExpenseSummary from "../components/Expense/ExpenseSummary";
 import ExpenseList from "../components/Expense/ExpenseList";
-import initialExpenses from "../data/expenses";
 import ItemModal from "../components/shared/ItemModal";
-import categoriesData from "../data/dashboardData.json";
+import { expenseService } from "../services/expenseService";
+import { categoryService } from "../services/CategoryService";
 
-const expenseCategories = [
-  { id: 1, name: "Food & Dining", icon: "🍜", type: "EXPENSE" },
-  { id: 2, name: "Transport", icon: "🚌", type: "EXPENSE" },
-  { id: 3, name: "Health", icon: "💊", type: "EXPENSE" },
-  { id: 4, name: "Utilities", icon: "💡", type: "EXPENSE" },
-  { id: 5, name: "Shopping", icon: "🛍️", type: "EXPENSE" },
-  { id: 6, name: "Entertainment", icon: "🎮", type: "EXPENSE" },
-];
+const EMPTY_FILTERS = { search: "", category: "", method: "", dateFrom: "", dateTo: "" };
 
 function ExpensePage() {
-  const [expenses, setExpenses] = useState(initialExpenses);
-  const [isModalOpen, setModal] = useState(false);
-  const [editData, setEditData] = useState(null);
+  const [expenses, setExpenses]     = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [isModalOpen, setModal]     = useState(false);
+  const [loading, setLoading]       = useState(true);
+  const [error, setError]           = useState(null);
+  const [filters, setFilters]       = useState(EMPTY_FILTERS);
 
-  const handleSave = (formData) => {
-    if (editData) {
-      setExpenses((prev) =>
-        prev.map((e) => (e.id === editData.id ? { ...e, ...formData } : e)),
-      );
-    } else {
-      const newId = Math.max(...expenses.map((e) => e.id)) + 1;
-      setExpenses((prev) => [{ id: newId, ...formData }, ...prev]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const [expenseData, categoryData] = await Promise.all([
+          expenseService.getAllExpenses(),
+          categoryService.getAllCategories()
+        ]);
+        setExpenses(expenseData);
+        setCategories(categoryData.filter(c => c.type?.toUpperCase() === "EXPENSE"));
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const filtered = expenses.filter(e => {
+    if (filters.search   && !e.reason?.toLowerCase().includes(filters.search.toLowerCase())
+                         && !e.categoryName?.toLowerCase().includes(filters.search.toLowerCase())) return false
+    if (filters.category && e.categoryName !== filters.category) return false
+    if (filters.method   && e.method !== filters.method)         return false
+    if (filters.dateFrom && e.date?.slice(0, 10) < filters.dateFrom) return false
+    if (filters.dateTo   && e.date?.slice(0, 10) > filters.dateTo)   return false
+    return true
+  });
+
+  function handleFilterChange(key, value) {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  }
+
+  const handleSave = async (formData) => {
+    try {
+      const newExpense = await expenseService.createExpense({
+        method:     formData.method ?? 0,
+        reason:     formData.note,
+        amount:     formData.amount,
+        date:       formData.date,
+        categoryId: formData.categoryId,
+      });
+      setExpenses(prev => [newExpense, ...prev]);
+      setModal(false);
+    } catch (err) {
+      alert(err.message);
     }
-    setEditData(null);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("Delete this expense?"))
-      setExpenses((prev) => prev.filter((e) => e.id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this expense?")) return;
+    try {
+      await expenseService.deleteExpense(id);
+      setExpenses(prev => prev.filter(e => e.id !== id));
+    } catch (err) {
+      alert(err.message);
+    }
   };
 
-  const handleEdit = (expense) => {
-    setEditData(expense);
-    setModal(true);
-  };
-
-  const handleClose = () => {
-    setModal(false);
-    setEditData(null);
-  };
+  if (loading) return <div className="p-6 text-sm text-gray-400">Loading...</div>;
+  if (error)   return <div className="p-6 text-sm text-red-500">Error: {error}</div>;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-semibold text-slate-800">Expenses</h1>
+        <h1 className="text-xl font-medium text-gray-800">Expenses</h1>
         <button
-          onClick={() => {
-            setEditData(null);
-            setModal(true);
-          }}
+          onClick={() => setModal(true)}
           className="bg-violet-600 hover:bg-violet-700 text-white text-sm px-4 py-2 rounded-lg"
         >
           + Add Expense
         </button>
       </div>
 
-      <ExpenseSummary expenses={expenses} />
+      <ExpenseSummary expenses={filtered} />
+
       <ExpenseList
-        expenses={expenses}
-        onEdit={handleEdit}
+        expenses={filtered}
+        categories={categories}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onClear={() => setFilters(EMPTY_FILTERS)}
         onDelete={handleDelete}
       />
 
       <ItemModal
         open={isModalOpen}
-        onClose={handleClose}
+        onClose={() => setModal(false)}
         onSave={handleSave}
-        editData={editData}
         lockedType="expense"
-        categories={expenseCategories} 
+        categories={categories}
       />
     </div>
   );

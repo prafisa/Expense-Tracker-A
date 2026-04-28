@@ -13,22 +13,22 @@ const IncomeSummary = ({ transactions }) => {
 
   return (
     <div className="grid grid-cols-3 gap-3 mb-6">
-      <div className="bg-gray-100 rounded-lg p-6">
+      <div className="bg-gray-100 rounded-lg p-4">
         <p className="text-xs text-gray-500 mb-1">Total Income</p>
         <p className="text-xl font-medium text-green-600">
-          +Rs {totalIncome.toLocaleString()}
+          Rs. {totalIncome.toLocaleString()}
         </p>
       </div>
-      <div className="bg-gray-100 rounded-lg p-6">
+      <div className="bg-gray-100 rounded-lg p-4">
         <p className="text-xs text-gray-500 mb-1">This month</p>
         <p className="text-xl font-medium text-red-500">
-          +Rs {thisMonthIncome.toLocaleString()}
+          Rs. {thisMonthIncome.toLocaleString()}
         </p>
       </div>
-      <div className="bg-gray-100 rounded-lg p-6">
+      <div className="bg-gray-100 rounded-lg p-4">
         <p className="text-xs text-gray-500 mb-1">Avg per transaction</p>
         <p className="text-xl font-medium text-blue-500">
-          Rs {avgIncome.toLocaleString()}
+          Rs. {avgIncome.toLocaleString()}
         </p>
       </div>
 

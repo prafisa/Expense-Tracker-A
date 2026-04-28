@@ -4,9 +4,10 @@ import ExpensePage from "./pages/ExpensePage"
 import Dashboard from './pages/Dashboard'
 import IncomePage from "./pages/Income"
 import Transaction from './pages/Transaction'
-
+// import BudgetPage from './pages/BudgetDashboard'
 import React from 'react'
 import CategoryPage from './pages/CategoryPage'
+import BudgetManager from './pages/BudgetManager'
 
 
 const router = createBrowserRouter([
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: 'categories',
         element: <CategoryPage/>
+      },
+      {
+        path:'budget',
+        element: <BudgetManager/>
       }
     ]
   },
