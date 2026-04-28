@@ -3,25 +3,30 @@ import axios from "axios"
 import TransactionSummary from "../components/Transactions/TransactionSummary"
 import TransactionFilters from "../components/Transactions/TransactionFilters"
 import TransactionTable from "../components/Transactions/TransactionTable"
-import Pagination from "../components/shared/Pagination"
 
 const api = axios.create({ baseURL: "https://localhost:7204/api" })
-const ITEMS_PER_PAGE = 5
 
-const EMPTY_FILTERS = { search: "", category: "", source: "", type: "", dateFrom: "", dateTo: "" }
+const EMPTY_FILTERS = {
+  search: "",
+  category: "",
+  source: "",
+  type: "",
+  dateFrom: "",
+  dateTo: ""
+}
 
 function shapeTransaction(t) {
   return {
-    id:       t.id,
-    name:     t.name,
-    date:     t.date,
-    source:   t.method,
-    amount:   t.amount,
-    type:     t.type,
+    id: t.id,
+    name: t.name,
+    date: t.date,
+    source: t.method,
+    amount: t.amount,
+    type: t.type,
     categoryId: t.categoryId,
     category: {
-      name:  t.categoryName,
-      icon:  t.categoryIcon,
+      name: t.categoryName,
+      icon: t.categoryIcon,
       color: t.categoryColor,
     }
   }
@@ -29,11 +34,11 @@ function shapeTransaction(t) {
 
 export default function Transaction() {
   const [transactions, setTransactions] = useState([])
-  const [categories, setCategories]     = useState([])
-  const [filters, setFilters]           = useState(EMPTY_FILTERS)
-  const [currentPage, setCurrentPage]   = useState(1)
-  const [loading, setLoading]           = useState(true)
-  const [summary, setSummary]           = useState({
+  const [categories, setCategories] = useState([])
+  const [filters, setFilters] = useState(EMPTY_FILTERS)
+  const [loading, setLoading] = useState(true)
+
+  const [summary, setSummary] = useState({
     totalIncome: 0,
     totalExpense: 0,
     balance: 0,
@@ -45,60 +50,62 @@ export default function Transaction() {
       api.get("/transaction"),
       api.get("/category"),
     ]).then(([txnRes, categoryRes]) => {
+
       const shaped = (txnRes.data.transactions ?? []).map(shapeTransaction)
+
       setTransactions(shaped)
+
       setSummary({
-        totalIncome:      txnRes.data.totalIncome ?? 0,
-        totalExpense:     txnRes.data.totalExpense ?? 0,
-        balance:          txnRes.data.balance ?? 0,
+        totalIncome: txnRes.data.totalIncome ?? 0,
+        totalExpense: txnRes.data.totalExpense ?? 0,
+        balance: txnRes.data.balance ?? 0,
         transactionCount: txnRes.data.transactionCount ?? 0,
       })
+
       setCategories(categoryRes.data.map(c => ({
-        id:    c.id,
-        name:  c.name,
-        icon:  c.icon,
+        id: c.id,
+        name: c.name,
+        icon: c.icon,
         color: c.color,
-        type:  c.type,
+        type: c.type,
       })))
+
       setLoading(false)
     })
   }, [])
 
   // Apply filters client-side
   const filtered = transactions.filter(t => {
-    if (filters.search   && !t.name?.toLowerCase().includes(filters.search.toLowerCase())) return false
+    if (filters.search && !t.name?.toLowerCase().includes(filters.search.toLowerCase())) return false
     if (filters.category && t.category?.name !== filters.category) return false
-    if (filters.source   && t.source !== filters.source)           return false
-    if (filters.type     && t.type !== filters.type)               return false
+    if (filters.source && t.source !== filters.source) return false
+    if (filters.type && t.type !== filters.type) return false
     if (filters.dateFrom && t.date?.slice(0, 10) < filters.dateFrom) return false
-    if (filters.dateTo   && t.date?.slice(0, 10) > filters.dateTo)   return false
+    if (filters.dateTo && t.date?.slice(0, 10) > filters.dateTo) return false
     return true
   })
 
-  // Recalculate summary from filtered list
+  // Summary based on filtered data
   const filteredSummary = {
-    totalIncome:      filtered.filter(t => t.type === "INCOME").reduce((s, t) => s + t.amount, 0),
-    totalExpense:     filtered.filter(t => t.type === "EXPENSE").reduce((s, t) => s + t.amount, 0),
-    balance:          filtered.filter(t => t.type === "INCOME").reduce((s, t) => s + t.amount, 0)
-                    - filtered.filter(t => t.type === "EXPENSE").reduce((s, t) => s + t.amount, 0),
+    totalIncome: filtered.filter(t => t.type === "INCOME").reduce((s, t) => s + t.amount, 0),
+    totalExpense: filtered.filter(t => t.type === "EXPENSE").reduce((s, t) => s + t.amount, 0),
+    balance:
+      filtered.filter(t => t.type === "INCOME").reduce((s, t) => s + t.amount, 0)
+      -
+      filtered.filter(t => t.type === "EXPENSE").reduce((s, t) => s + t.amount, 0),
     transactionCount: filtered.length,
   }
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE))
-  const paginated  = filtered.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  )
-
   function handleFilterChange(key, value) {
     setFilters(prev => ({ ...prev, [key]: value }))
-    setCurrentPage(1)
   }
 
   const handleDelete = async (id, txnType) => {
     if (!window.confirm("Delete this transaction?")) return
+
     const endpoint = txnType === "INCOME" ? "income" : "expense"
     await api.delete(`/${endpoint}/${id}`)
+
     setTransactions(prev => prev.filter(t => t.id !== id))
   }
 
@@ -117,20 +124,13 @@ export default function Transaction() {
         categories={categories}
         filters={filters}
         onFilterChange={handleFilterChange}
-        onClear={() => { setFilters(EMPTY_FILTERS); setCurrentPage(1) }}
+        onClear={() => setFilters(EMPTY_FILTERS)}
       />
 
+      {/* 🔥 NO PAGINATION — SHOW ALL FILTERED DATA */}
       <TransactionTable
-        transactions={paginated}
+        transactions={filtered}
         onDelete={handleDelete}
-      />
-
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        totalItems={filtered.length}
-        itemsPerPage={ITEMS_PER_PAGE}
-        onPageChange={setCurrentPage}
       />
 
     </div>
